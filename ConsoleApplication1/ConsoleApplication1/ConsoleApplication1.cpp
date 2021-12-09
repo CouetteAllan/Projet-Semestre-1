@@ -7,8 +7,8 @@
 
 int main()
 {
-	float wHeight = 720;
-	float wWidth = 1280;
+	float wHeight = 920;
+	float wWidth = 1580;
 	sf::RenderWindow window(sf::VideoMode(wWidth, wHeight), "Jeu de ouf");
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(144);
