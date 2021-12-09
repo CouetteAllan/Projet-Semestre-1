@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Main.hpp>
 #include <SFML/Window.hpp>
+#include "imgui/imconfig-SFML.h"
 
 #include "Tool.hpp"
 
