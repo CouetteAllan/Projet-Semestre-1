@@ -1,4 +1,2 @@
-﻿  ConsoleApplication1.cpp
-C:\Workshop\Allan\Projet Fin de semestre\Projet-Semestre-1\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(12,48): warning C4244: 'argument' : conversion de 'float' en 'unsigned int', perte possible de données
-C:\Workshop\Allan\Projet Fin de semestre\Projet-Semestre-1\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(12,40): warning C4244: 'argument' : conversion de 'float' en 'unsigned int', perte possible de données
-  ConsoleApplication1.vcxproj -> C:\Workshop\Allan\Projet Fin de semestre\Projet-Semestre-1\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe
+﻿  imgui-SFML.cpp
+  ConsoleApplication1.vcxproj -> C:\Users\couet\OneDrive\Bureau\Allan\Workspace\Projet-Semestre-1\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe
