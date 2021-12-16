@@ -47,7 +47,7 @@ public:
 
 	int click = 0;
 
-	Entity( Shape* shape, float _cx, float _cy, EType _type = Player) {
+	Entity( Shape* shape, float _cx, float _cy, EType _type) {
 		type = _type;
 		cx = _cx;
 		cy = _cy;
@@ -66,3 +66,13 @@ public:
 	bool isColliding(int _cx, int _cy);
 };
 
+
+class PlayerEntity : Entity {
+	
+
+	 virtual void update(double dt);
+
+	 PlayerEntity(Shape* shape, float _cx, float _cy, EType _type = Player) : Entity(shape, _cx, _cy, _type) {
+
+	 }
+};
