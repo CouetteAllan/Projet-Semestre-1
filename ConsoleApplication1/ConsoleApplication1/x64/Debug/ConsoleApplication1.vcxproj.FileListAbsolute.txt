@@ -1,0 +1,6 @@
+C:\Workshop\Allan\hae_gp2\Visual Studio\cours 5\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe
+C:\Workshop\Allan\hae_gp2\Visual Studio\cours 5\ConsoleApplication1\x64\Debug\ConsoleApplication1.pdb
+C:\Workshop\Allan\hae_gp2\Visual Studio\cours 6\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe
+C:\Workshop\Allan\hae_gp2\Visual Studio\cours 6\ConsoleApplication1\x64\Debug\ConsoleApplication1.pdb
+C:\Workshop\Allan\hae_gp2\Visual Studio\cours 7\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe
+C:\Workshop\Allan\hae_gp2\Visual Studio\cours 7\ConsoleApplication1\x64\Debug\ConsoleApplication1.pdb

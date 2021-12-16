@@ -1,0 +1,51 @@
+﻿  Bullet.cpp
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\bullet.cpp(5): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\bullet.cpp(9): warning C4244: 'argument' : conversion de 'int' en 'T', perte possible de données
+          with
+          [
+              T=float
+          ]
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\bullet.cpp(33): warning C4244: '+=' : conversion de 'double' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=float
+          ]
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\bullet.cpp(34): warning C4244: '+=' : conversion de 'double' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=float
+          ]
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\bullet.cpp(46): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\bullet.cpp(46): warning C4267: 'initialisation' : conversion de 'size_t' en 'const int', perte possible de données
+  ConsoleApplication1.cpp
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\curve.hpp(48): warning C4267: 'argument' : conversion de 'size_t' en 'int', perte possible de données
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\curve.hpp(49): warning C4267: 'argument' : conversion de 'size_t' en 'int', perte possible de données
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\curve.hpp(50): warning C4267: 'argument' : conversion de 'size_t' en 'int', perte possible de données
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\consoleapplication1.cpp(40): warning C4244: 'argument' : conversion de 'T' en 'T', perte possible de données
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\consoleapplication1.cpp(74): warning C4244: 'argument' : conversion de 'T' en 'T', perte possible de données
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\consoleapplication1.cpp(124): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\consoleapplication1.cpp(125): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\consoleapplication1.cpp(179): warning C4305: 'initialisation' : troncation de 'double' à 'float'
+  Int64Array.cpp
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\int64array.cpp(18): warning C4244: 'argument' : conversion de 'int64_t' en 'int', perte possible de données
+c:\workspace\allan\hae_gp2\visual studio\cours 5\consoleapplication1\int64array.cpp(97): warning C4244: '=' : conversion de 'double' en 'int', perte possible de données
+  Génération de code en cours
+  All 331 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Fin de la génération du code
+  ConsoleApplication1.vcxproj -> C:\WorkSpace\Allan\hae_gp2\Visual Studio\cours 5\ConsoleApplication1\x64\Release\ConsoleApplication1.exe
