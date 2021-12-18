@@ -24,9 +24,6 @@ void Entity::syncSprite()
 
 void Entity::update(double dt)
 {
-	if (type == Wall) {
-		return;
-	}
 	rx += dx * dt;
 	dx *= friction;//0.96f
 
@@ -55,9 +52,7 @@ void Entity::update(double dt)
 
 
 	ry += dy * dt;
-	if(!isGrounded && type != Wall && gravity)
-		dy += 80.0f * dt;
-	dy *= 0.95f;
+	dy *= friction;
 	
 	if (isColliding(cx, cy - 1) && ry <= 0.0f) {
 		ry = 1.0f;
@@ -104,7 +99,7 @@ bool Entity::isColliding(int _cx, int _cy)
 		return true;
 	
 	for (auto& w : World::objects) {
-		if (w->type != Player) {
+		if (w->type != Player || w->type != Enemy) {
 
 			if (w->cx == _cx && w->cy == _cy)
 				return true;
@@ -112,7 +107,10 @@ bool Entity::isColliding(int _cx, int _cy)
 	}
 
 	return false;
+	
+}
 
-	//regarde si il y a quelque chose en (_cx,_cy);
-	//cx 
+void PlayerEntity::update(double dt)
+{
+	Entity::update(dt);
 }

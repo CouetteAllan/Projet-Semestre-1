@@ -20,27 +20,27 @@ public:
 
 
 	//---------- Graphic Components ------------//
-	Shape* sprite = nullptr;
-	bool visible = true;
-	EType type;
+	Shape*			sprite = nullptr;
+	bool			visible = true;
+	EType			type;
 
 	//---------- Base Coordinates -------------------//
-	int cx = 0; //Numéro de la cellule en X
-	int cy = 0; //Numéro de la cellule en Y
-	float rx = 0.0f; //Ratio de la cellule en X allant de 0.0f à 1.0f
-	float ry = 0.0f; //Ratio de la cellule en Y allant de 0.0f à 1.0f
+	int				cx = 0; //Numéro de la cellule en X
+	int				cy = 0; //Numéro de la cellule en Y
+	float			rx = 0.0f; //Ratio de la cellule en X allant de 0.0f à 1.0f
+	float			ry = 0.0f; //Ratio de la cellule en Y allant de 0.0f à 1.0f
 
 	//-------------- Movement -------------------------//
-	float dx = 0.0f;
-	float dy = 0.0f;
+	float				dx = 0.0f;
+	float				dy = 0.0f;
 	inline static float friction = 0.827f;
-	bool isGrounded = false;
-	bool gravity = true;
+	bool				isGrounded = false;
+	bool				gravity = true;
 
 
 	//-------------- Resulting Coordinates -----------------//
-	double xx = 0.0f;
-	double yy = 0.0f;
+	double			xx = 0.0f;
+	double			yy = 0.0f;
 
 	const inline static int stride = 32;
 
@@ -67,12 +67,15 @@ public:
 };
 
 
-class PlayerEntity : Entity {
+class PlayerEntity : public Entity {
+public:
+
+	int				HP = 5;
+	float			speedMultiplier = 1.2f;
+
+	virtual void update(double dt);
 	
+	PlayerEntity(Shape* shape, float _cx, float _cy, EType _type = Player) : Entity(shape, _cx, _cy, _type) {
 
-	 virtual void update(double dt);
-
-	 PlayerEntity(Shape* shape, float _cx, float _cy, EType _type = Player) : Entity(shape, _cx, _cy, _type) {
-
-	 }
+	}
 };

@@ -23,13 +23,16 @@ int main()
 {
 	float wHeight = 720;
 	float wWidth = 1280;
-	sf::RenderWindow window(sf::VideoMode(wWidth, wHeight), "Moteur à Case");
+	sf::RenderWindow window(sf::VideoMode(wWidth, wHeight), "Jeu du turfu tavu");
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(144);
 
 	ImGui::SFML::Init(window);
 
+	RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
+	playerShape->setFillColor(Color::Blue);
 
+	PlayerEntity* player = new PlayerEntity(playerShape, 20, 15);
 
 
 	
@@ -41,8 +44,10 @@ int main()
 
 
 	bool mouseLeftWasPressed = false;
+	Vector2f mousePos;
 	//bool enterWasPressed = false;
 	World data;
+	data.objects.push_back((Entity*)player);
 	//----------------------------------------  IMGUI STUFF  -------------------------------------------------------------
 	float bgCol[3] = { 0,0,0 };
 	Clock clock;
@@ -71,13 +76,26 @@ int main()
 		}
 		bool keyHit = false;
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
+			player->dy -= 2 * player->speedMultiplier;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			player->dy += 2 * player->speedMultiplier;
+		}
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			player->dx += 2 * player->speedMultiplier;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
+			player->dx -= 2 * player->speedMultiplier;
+
+		}
 
 
 		
 		bool mouseLeftIsPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
 		bool mouseIsReleased = (!mouseLeftIsPressed && mouseLeftWasPressed);
-		
+		mousePos = (Vector2f)Mouse::getPosition();
 
 
 
@@ -89,7 +107,24 @@ int main()
 
 		ImGui::SFML::Update(window, clock.restart());
 
-		
+		Begin("Coordonates");
+		static bool modified;
+		modified = SliderInt("CX", &player->cx, 0.0f, wWidth / player->stride);
+		modified = SliderInt("CY", &player->cy, 0.0f, wHeight / player->stride - 2);
+		modified = SliderFloat("RX", &player->rx, 0.0f, 1.0f);
+		modified = SliderFloat("RY", &player->ry, 0.0f, 1.0f);
+		modified = Checkbox("Enable Gravity", &player->gravity);
+
+		Value("Coord X", player->sprite->getPosition().x);
+		Value("Coord Y", player->sprite->getPosition().y);
+		Value("Speed X", player->dx);
+		Value("Speed Y", player->dy);
+		Value("IsGrounded", player->isGrounded);
+
+		SliderFloat("Friction", &player->friction, 0.0f, 1.0f);
+		if (modified)
+			player->syncSprite();
+		End();
 			
 
 		
