@@ -157,8 +157,28 @@ void BulletEntity::create(float _px, float _py, float _dx, float _dy) {
 void BulletEntity::update(double dt) {
 	for (int i = 0; i < pxx.size(); ++i) {
 		if (alive[i]) {
-			pxx[i] += dx[i] * dt;
-			pyy[i] += dy[i] * dt;
+			Arr_rx[i] += dx[i] * dt;
+
+			while (Arr_rx[i] > 1) {
+				Arr_rx[i]--;
+				Arr_cx[i]++;
+			}
+			while (Arr_rx[i] < 0) {
+				Arr_rx[i]++;
+				Arr_cx[i]--;
+			}
+
+			Arr_ry[i] += dy[i] * dt;
+
+			while (Arr_ry[i] > 1) {
+				Arr_ry[i]--;
+				Arr_cy[i]++;
+			}
+			while (Arr_ry[i] < 0) {
+				Arr_ry[i]++;
+				Arr_cy[i]--;
+			}
+			convert(i);
 			if (
 				(pxx[i] > 2000) || (pxx[i] < -10) ||
 				(pyy[i] > 1000) || (pyy[i] < -10)
@@ -180,5 +200,11 @@ void BulletEntity::draw(sf::RenderWindow& win) {
 		}
 		idx++;
 	}
+}
+
+void BulletEntity::convert(int i)
+{
+	pxx[i] = (Arr_cx[i] + Arr_rx[i]) * stride;
+	pyy[i] = (Arr_cy[i] + Arr_ry[i]) * stride;
 }
 

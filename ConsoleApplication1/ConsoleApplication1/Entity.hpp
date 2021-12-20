@@ -110,7 +110,7 @@ public:
 	void create(float pxx, float pyy, float dx, float dy);
 	virtual void update(double dt);
 	virtual void draw(RenderWindow &win);
-	void convert();
+	void convert(int i);
 	void draw(sf::RenderWindow& win);
 
 };
