@@ -13,6 +13,7 @@ enum EType {
 	Player,
 	Wall,
 	Enemy,
+	Bullet,
 };
 
 class Entity {
@@ -47,16 +48,13 @@ public:
 
 	int click = 0;
 
-	Entity( Shape* shape, float _cx, float _cy, EType _type) {
-		type = _type;
-		cx = _cx;
-		cy = _cy;
-		sprite = shape;
-		syncSprite();
-	}
+	Entity(Shape* shape, float _cx, float _cy, EType _type);
+	Entity();
 
 
 	void setPosition(float x, float y);
+
+	Vector2f getPosition();
 
 	void syncSprite();
 	void update(double dt);
@@ -78,4 +76,41 @@ public:
 	PlayerEntity(Shape* shape, float _cx, float _cy, EType _type = Player) : Entity(shape, _cx, _cy, _type) {
 
 	}
+};
+
+class BulletEntity : public Entity {
+public:
+	CircleShape b;
+
+	std::vector<int>	Arr_cx; //Tableau Numéro de la cellule en X
+	std::vector<int>	Arr_cy; //Tableau Numéro de la cellule en Y
+	std::vector<float>	Arr_rx; //Tableau Ratio de la cellule en X allant de 0.0f à 1.0f
+	std::vector<float>	Arr_ry; //Tableau Ratio de la cellule en Y allant de 0.0f à 1.0f
+
+	std::vector<float>	pxx;
+	std::vector<float>	pyy;
+
+	std::vector<float>	dx;
+	std::vector<float>	dy;
+
+	std::vector<bool>	alive;
+
+	BulletEntity() : Entity()
+	{
+		int t = 10;
+		b = sf::CircleShape(t);
+		b.setOutlineThickness(2);
+		b.setFillColor(sf::Color::Yellow);
+		b.setOutlineColor(sf::Color::Red);
+		b.setOrigin(sf::Vector2f(t, t));
+		sprite = (Shape*)&b;
+
+	}
+
+	void create(float pxx, float pyy, float dx, float dy);
+	virtual void update(double dt);
+	virtual void draw(RenderWindow &win);
+	void convert();
+	void draw(sf::RenderWindow& win);
+
 };

@@ -46,6 +46,8 @@ int main()
 	bool mouseLeftWasPressed = false;
 	Vector2f mousePos;
 	//bool enterWasPressed = false;
+	BulletEntity bullets;
+
 	World data;
 	data.objects.push_back((Entity*)player);
 	//----------------------------------------  IMGUI STUFF  -------------------------------------------------------------
@@ -95,9 +97,19 @@ int main()
 		
 		bool mouseLeftIsPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
 		bool mouseIsReleased = (!mouseLeftIsPressed && mouseLeftWasPressed);
-		mousePos = (Vector2f)Mouse::getPosition();
+		mousePos = (Vector2f)Mouse::getPosition(window);
 
-
+		if (mouseLeftIsPressed) {
+			auto pos = player->getPosition();
+			auto dir = mousePos - pos;
+			float dirLen = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+			sf::Vector2f dxy(1, 0);
+			if (dirLen) {
+				dxy = dir / dirLen;
+			}
+			dxy *= 60.0f * 3;
+			bullets.create(pos.x, pos.y, dxy.x, dxy.y);
+		}
 
 
 		if (mouseLeftIsPressed)
@@ -120,6 +132,8 @@ int main()
 		Value("Speed X", player->dx);
 		Value("Speed Y", player->dy);
 		Value("IsGrounded", player->isGrounded);
+		Value("Mouse Position X", mousePos.x);
+		Value("Mouse Position Y", mousePos.y);
 
 		SliderFloat("Friction", &player->friction, 0.0f, 1.0f);
 		if (modified)

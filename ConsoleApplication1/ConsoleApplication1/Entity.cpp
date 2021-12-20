@@ -3,6 +3,22 @@
 #include "imgui.h"
 #include "World.hpp"
 
+inline Entity::Entity(Shape * shape, float _cx, float _cy, EType _type) {
+	type = _type;
+	cx = _cx;
+	cy = _cy;
+	sprite = shape;
+	syncSprite();
+}
+
+inline Entity::Entity() {
+	cx = 0;
+	cy = 0;
+	rx = 0.0f;
+	ry = 0.0f;
+	syncSprite();
+}
+
 void Entity::setPosition(float x, float y)
 {
 	xx = x;
@@ -13,6 +29,11 @@ void Entity::setPosition(float x, float y)
 	ry = (yy - cy * stride) / stride;
 
 
+}
+
+Vector2f Entity::getPosition()
+{
+	return Vector2f(xx,yy);
 }
 
 void Entity::syncSprite()
@@ -114,3 +135,50 @@ void PlayerEntity::update(double dt)
 {
 	Entity::update(dt);
 }
+
+void BulletEntity::create(float _px, float _py, float _dx, float _dy) {
+	for (int i = 0; i < pxx.size(); ++i) {
+		if (!alive[i]) {
+			pxx[i] = _px;
+			pyy[i] = _py;
+			dx[i] = _dx;
+			dy[i] = _dy;
+			alive[i] = true;
+			return;
+		}
+	}
+	pxx.push_back(_px);
+	pyy.push_back(_py);
+	dx.push_back(_dx);
+	dy.push_back(_dy);
+	alive.push_back(true);
+}
+
+void BulletEntity::update(double dt) {
+	for (int i = 0; i < pxx.size(); ++i) {
+		if (alive[i]) {
+			pxx[i] += dx[i] * dt;
+			pyy[i] += dy[i] * dt;
+			if (
+				(pxx[i] > 2000) || (pxx[i] < -10) ||
+				(pyy[i] > 1000) || (pyy[i] < -10)
+				) 
+			{
+				alive[i] = false;
+			}
+		}
+	}
+}
+
+void BulletEntity::draw(sf::RenderWindow& win) {
+	int idx = 0;
+	const int sz = pxx.size();
+	while (idx < sz) {
+		if (alive[idx]) {
+			b.setPosition(pxx[idx], pyy[idx]);
+			win.draw(b);
+		}
+		idx++;
+	}
+}
+
