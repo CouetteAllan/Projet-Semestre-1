@@ -7,6 +7,10 @@ std::vector<RectangleShape*> World::grid;
 void World::draw(RenderWindow& win)
 {
 	for (auto o : objects) {
+		if (o->type == Bullet) {
+			BulletEntity* bu = (BulletEntity*)o;
+			bu->draw(win);
+		}
 		o->draw(win);
 	}
 	for (auto r : grid) {
@@ -18,6 +22,10 @@ void World::update(double dt)
 {
 	Entity* p = nullptr;
 	for (auto o : objects) {
+		if (o->type == Bullet) {
+			BulletEntity* bu = (BulletEntity*)o;
+			bu->update(dt);
+		}
 		o->update(dt);
 
 	}

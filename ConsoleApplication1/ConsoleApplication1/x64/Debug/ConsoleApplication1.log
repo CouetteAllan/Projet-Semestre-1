@@ -1,25 +1,35 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: Le répertoire intermédiaire (x64\Debug\) contient des fichiers partagés provenant d'un autre projet (ConsoleApplication1.vcxproj). Cela peut entraîner un comportement de nettoyage et de régénération incorrect.
-  ConsoleApplication1.cpp
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.hpp(52): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.hpp(53): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\consoleapplication1.cpp(26): warning C4244: 'argument' : conversion de 'float' en 'unsigned int', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\consoleapplication1.cpp(112): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\consoleapplication1.cpp(113): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\consoleapplication1.cpp(141): warning C4244: 'argument' : conversion de 'float' en 'sf::Uint8', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\consoleapplication1.cpp(140): warning C4244: 'argument' : conversion de 'float' en 'sf::Uint8', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\consoleapplication1.cpp(139): warning C4244: 'argument' : conversion de 'float' en 'sf::Uint8', perte possible de données
   Entity.cpp
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.hpp(52): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.hpp(53): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(10): warning C4244: '=' : conversion de 'double' en 'int', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(11): warning C4244: '=' : conversion de 'double' en 'int', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(12): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(13): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(22): warning C4244: 'argument' : conversion de 'double' en 'float', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(27): warning C4244: '+=' : conversion de 'double' en 'float', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(54): warning C4244: '+=' : conversion de 'double' en 'float', perte possible de données
-  World.cpp
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.hpp(52): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.hpp(53): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
-  Génération de code en cours...
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(8): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(9): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(25): warning C4244: '=' : conversion de 'double' en 'int', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(26): warning C4244: '=' : conversion de 'double' en 'int', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(27): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(28): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(35): warning C4244: 'argument' : conversion de 'double' en 'T', perte possible de données
+          with
+          [
+              T=float
+          ]
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(42): warning C4244: 'argument' : conversion de 'double' en 'float', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(47): warning C4244: '+=' : conversion de 'double' en 'float', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(74): warning C4244: '+=' : conversion de 'double' en 'float', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(143): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(147): warning C4244: 'argument' : conversion de 'int' en 'T', perte possible de données
+          with
+          [
+              T=float
+          ]
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(176): warning C4244: '+=' : conversion de 'double' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=float
+          ]
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(187): warning C4244: '+=' : conversion de 'double' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=float
+          ]
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(211): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(211): warning C4267: 'initialisation' : conversion de 'size_t' en 'const int', perte possible de données
   ConsoleApplication1.vcxproj -> C:\Users\couet\OneDrive\Bureau\Allan\Workspace\Projet-Semestre-1\ConsoleApplication1\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe

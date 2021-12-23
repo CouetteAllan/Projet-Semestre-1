@@ -74,7 +74,7 @@ public:
 	virtual void update(double dt);
 	
 	PlayerEntity(Shape* shape, float _cx, float _cy, EType _type = Player) : Entity(shape, _cx, _cy, _type) {
-
+		
 	}
 };
 
@@ -95,22 +95,11 @@ public:
 
 	std::vector<bool>	alive;
 
-	BulletEntity() : Entity()
-	{
-		int t = 10;
-		b = sf::CircleShape(t);
-		b.setOutlineThickness(2);
-		b.setFillColor(sf::Color::Yellow);
-		b.setOutlineColor(sf::Color::Red);
-		b.setOrigin(sf::Vector2f(t, t));
-		sprite = (Shape*)&b;
-
-	}
+	BulletEntity();
 
 	void create(float pxx, float pyy, float dx, float dy);
 	virtual void update(double dt);
 	virtual void draw(RenderWindow &win);
 	void convert(int i);
-	void draw(sf::RenderWindow& win);
 
 };

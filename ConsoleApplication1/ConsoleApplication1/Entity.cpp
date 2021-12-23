@@ -3,7 +3,7 @@
 #include "imgui.h"
 #include "World.hpp"
 
-inline Entity::Entity(Shape * shape, float _cx, float _cy, EType _type) {
+Entity::Entity(Shape * shape, float _cx, float _cy, EType _type) {
 	type = _type;
 	cx = _cx;
 	cy = _cy;
@@ -11,12 +11,11 @@ inline Entity::Entity(Shape * shape, float _cx, float _cy, EType _type) {
 	syncSprite();
 }
 
-inline Entity::Entity() {
+Entity::Entity() {
 	cx = 0;
 	cy = 0;
 	rx = 0.0f;
 	ry = 0.0f;
-	syncSprite();
 }
 
 void Entity::setPosition(float x, float y)
@@ -136,6 +135,21 @@ void PlayerEntity::update(double dt)
 	Entity::update(dt);
 }
 
+
+
+BulletEntity::BulletEntity()
+{
+	int t = 10;
+	b = sf::CircleShape(t);
+	b.setOutlineThickness(2);
+	b.setFillColor(sf::Color::Yellow);
+	b.setOutlineColor(sf::Color::Red);
+	b.setOrigin(sf::Vector2f(t, t));
+	sprite = (Shape*)&b;
+	type = Bullet;
+
+}
+
 void BulletEntity::create(float _px, float _py, float _dx, float _dy) {
 	for (int i = 0; i < pxx.size(); ++i) {
 		if (!alive[i]) {
@@ -155,6 +169,8 @@ void BulletEntity::create(float _px, float _py, float _dx, float _dy) {
 }
 
 void BulletEntity::update(double dt) {
+	if (pxx.size() == 0)
+		return;
 	for (int i = 0; i < pxx.size(); ++i) {
 		if (alive[i]) {
 			Arr_rx[i] += dx[i] * dt;

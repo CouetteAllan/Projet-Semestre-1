@@ -46,10 +46,11 @@ int main()
 	bool mouseLeftWasPressed = false;
 	Vector2f mousePos;
 	//bool enterWasPressed = false;
-	BulletEntity bullets;
+	BulletEntity* bullets = new BulletEntity();
 
 	World data;
 	data.objects.push_back((Entity*)player);
+	data.objects.push_back((Entity*)bullets);
 	//----------------------------------------  IMGUI STUFF  -------------------------------------------------------------
 	float bgCol[3] = { 0,0,0 };
 	Clock clock;
@@ -108,7 +109,7 @@ int main()
 				dxy = dir / dirLen;
 			}
 			dxy *= 60.0f * 3;
-			bullets.create(pos.x, pos.y, dxy.x, dxy.y);
+			bullets->create(pos.x, pos.y, dxy.x, dxy.y);
 		}
 
 
