@@ -155,6 +155,10 @@ void BulletEntity::create(float _px, float _py, float _dx, float _dy) {
 		if (!alive[i]) {
 			pxx[i] = _px;
 			pyy[i] = _py;
+			Arr_cx[i] = floor(_px / stride);
+			Arr_cy[i] = floor(_py / stride);
+			Arr_rx[i] = (_px - Arr_cx[i] * stride) / stride;
+			Arr_ry[i] = (_py - Arr_cy[i] * stride) / stride;
 			dx[i] = _dx;
 			dy[i] = _dy;
 			alive[i] = true;
@@ -163,6 +167,10 @@ void BulletEntity::create(float _px, float _py, float _dx, float _dy) {
 	}
 	pxx.push_back(_px);
 	pyy.push_back(_py);
+	Arr_cx.push_back((int)(_px / stride));
+	Arr_cy.push_back((int)(_py / stride));
+	Arr_rx.push_back((_px - (int)(_px / stride) * stride) / stride);
+	Arr_ry.push_back((_py - (int)(_py / stride) * stride) / stride);
 	dx.push_back(_dx);
 	dy.push_back(_dy);
 	alive.push_back(true);

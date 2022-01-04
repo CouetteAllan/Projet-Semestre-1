@@ -31,9 +31,13 @@ int main()
 
 	RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
 	playerShape->setFillColor(Color::Blue);
+	playerShape->setOrigin(10, 45);
 
 	PlayerEntity* player = new PlayerEntity(playerShape, 20, 15);
 
+	RectangleShape gun(sf::Vector2f(8, 32));
+	gun.setFillColor(sf::Color(0xFF, 0x00, 0x00));
+	gun.setOrigin(4, 10);
 
 	
 
@@ -41,7 +45,6 @@ int main()
 	double tStart = getTimeStamp();
 	double tEnterFrame = getTimeStamp();
 	double tExitFrame = getTimeStamp();
-
 
 	bool mouseLeftWasPressed = false;
 	Vector2f mousePos;
@@ -53,7 +56,13 @@ int main()
 	data.objects.push_back((Entity*)bullets);
 	//----------------------------------------  IMGUI STUFF  -------------------------------------------------------------
 	float bgCol[3] = { 0,0,0 };
-	Clock clock;
+	Clock clockImgui;
+
+	//----------------------------------------  GUN   --------------------------------------------------------------------
+	Clock timer;
+	bool enable = true;
+	static float fireRate = 1.0f;
+
 	int click = 0;
 	while (window.isOpen()) {
 		sf::Event event;
@@ -91,7 +100,6 @@ int main()
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
 			player->dx -= 2 * player->speedMultiplier;
-
 		}
 
 
@@ -100,17 +108,21 @@ int main()
 		bool mouseIsReleased = (!mouseLeftIsPressed && mouseLeftWasPressed);
 		mousePos = (Vector2f)Mouse::getPosition(window);
 
-		if (mouseLeftIsPressed) {
-			auto pos = player->getPosition();
+		bool timerFinished = timer.getElapsedTime() >= sf::seconds(1.0f) / fireRate;
+
+		if (mouseLeftIsPressed && timerFinished && enable) {
+			auto pos = gun.getPosition();
 			auto dir = mousePos - pos;
 			float dirLen = std::sqrt(dir.x * dir.x + dir.y * dir.y);
 			sf::Vector2f dxy(1, 0);
 			if (dirLen) {
 				dxy = dir / dirLen;
 			}
-			dxy *= 60.0f * 3;
+			dxy *= 20.0f;
 			bullets->create(pos.x, pos.y, dxy.x, dxy.y);
+			timer.restart();
 		}
+
 
 
 		if (mouseLeftIsPressed)
@@ -118,7 +130,11 @@ int main()
 		else
 			mouseLeftWasPressed = false;
 
-		ImGui::SFML::Update(window, clock.restart());
+
+
+
+
+		ImGui::SFML::Update(window, clockImgui.restart());
 
 		Begin("Coordonates");
 		static bool modified;
@@ -140,9 +156,21 @@ int main()
 		if (modified)
 			player->syncSprite();
 		End();
+
+		Begin("Gun");
+		SliderFloat("FireRate", &fireRate, 0.0f, 10.0f);
+		Checkbox("Enable", &enable);
+		End();
 			
 
-		
+		sf::Vector2f characterToMouse(
+			mousePos.y - player->getPosition().y,
+			mousePos.x - player->getPosition().x);
+
+		float radToDeg = 57.2958;
+		float angleC2M = atan2(characterToMouse.y, characterToMouse.x);
+		gun.setRotation(-angleC2M * radToDeg);
+		gun.setPosition(player->getPosition().x + 5, player->getPosition().y - 20);
 
 		//ImGui::ShowDemoWindow(&activeTool);
 
@@ -160,6 +188,7 @@ int main()
 		////////////////////
 		//DRAW
 		data.draw(window);
+		window.draw(gun);
 		//game elems
 
 
