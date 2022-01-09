@@ -1,9 +1,7 @@
 #pragma once
 #include "Entity.hpp"
 #include <iostream>
-#include <cstdio>
-#include <cstdlib>
-#include <vector>
+#include "Game.hpp"
 
 class Entity;
 

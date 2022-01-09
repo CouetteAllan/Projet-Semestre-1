@@ -1,7 +1,4 @@
 #include "Entity.hpp"
-#include "SFML/Graphics/RenderWindow.hpp"
-#include "imgui.h"
-#include "World.hpp"
 
 Entity::Entity(Shape * shape, float _cx, float _cy, EType _type) {
 	type = _type;
@@ -30,9 +27,42 @@ void Entity::setPosition(float x, float y)
 
 }
 
+void Entity::setState(State * currentState)
+{
+	if (currState)
+		delete currState;
+
+	currState = currentState;
+	currState->onEnter();
+}
+
 Vector2f Entity::getPosition()
 {
 	return Vector2f(xx,yy);
+}
+
+void Entity::im()
+{
+	using namespace ImGui;
+
+	Begin("Coordonates");
+	static bool modified;
+	modified = SliderInt("CX", &cx, 0.0f, Game::W/stride);
+	modified = SliderInt("CY", &cy, 0.0f, Game::H / stride - 2);
+	modified = SliderFloat("RX", &rx, 0.0f, 1.0f);
+	modified = SliderFloat("RY", &ry, 0.0f, 1.0f);
+	modified = Checkbox("Enable Gravity", &gravity);
+
+	Value("Coord X", sprite->getPosition().x);
+	Value("Coord Y", sprite->getPosition().y);
+	Value("Speed X", dx);
+	Value("Speed Y", dy);
+	Value("IsGrounded", isGrounded);
+
+	SliderFloat("Friction", &friction, 0.0f, 1.0f);
+	if (modified)
+		syncSprite();
+	End();
 }
 
 void Entity::syncSprite()
@@ -49,8 +79,8 @@ void Entity::update(double dt)
 
 
 	
-	if (isColliding(cx + 1, cy)&& rx >= 0.8f) {
-		rx = 0.8f;
+	if (isColliding(cx + 2, cy)&& rx >= 0.5f) {
+		rx = 0.6f;
 		dx = 0;
 	}
 	
@@ -74,13 +104,13 @@ void Entity::update(double dt)
 	ry += dy * dt;
 	dy *= friction;
 	
-	if (isColliding(cx, cy - 1) && ry <= 0.0f) {
-		ry = 1.0f;
+	if (isColliding(cx, cy - 1) && ry <= 0.5f) {
+		ry = 0.5f;
 		dy = 0;
 	}
 	
-	if (isColliding(cx, cy + 1) && ry >= 0.9f) {
-		ry = 1.0f;
+	if (isColliding(cx, cy + 1) && ry >= 0.5f) {
+		ry = 0.5f;
 		dy = 0;
 		isGrounded = true;
 	}
@@ -109,13 +139,13 @@ void Entity::draw(RenderWindow &win)
 
 bool Entity::isColliding(int _cx, int _cy)
 {
-	if (cx < 0)
+	if (_cx < 0)
 		return true;
-	if (cy < 0)
+	if (_cy < 0)
 		return true;
-	if (cx > 1280 / stride)
+	if (_cx > 1280 / stride)
 		return true;
-	if (cy > 720 / stride)
+	if (_cy > 720 / stride)
 		return true;
 	
 	for (auto& w : World::objects) {
@@ -132,6 +162,9 @@ bool Entity::isColliding(int _cx, int _cy)
 
 void PlayerEntity::update(double dt)
 {
+	if (currState) {
+		currState->onUpdate(dt);
+	}
 	Entity::update(dt);
 }
 
@@ -145,7 +178,6 @@ BulletEntity::BulletEntity()
 	b.setFillColor(sf::Color::Yellow);
 	b.setOutlineColor(sf::Color::Red);
 	b.setOrigin(sf::Vector2f(t, t));
-	sprite = (Shape*)&b;
 	type = Bullet;
 
 }
@@ -177,6 +209,9 @@ void BulletEntity::create(float _px, float _py, float _dx, float _dy) {
 }
 
 void BulletEntity::update(double dt) {
+	
+
+
 	if (pxx.size() == 0)
 		return;
 	for (int i = 0; i < pxx.size(); ++i) {
@@ -231,4 +266,119 @@ void BulletEntity::convert(int i)
 	pxx[i] = (Arr_cx[i] + Arr_rx[i]) * stride;
 	pyy[i] = (Arr_cy[i] + Arr_ry[i]) * stride;
 }
+
+
+void IdleState::onEnter()
+{
+	if (e->sprite) {
+		delete e->sprite;
+	}
+	RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
+	playerShape->setFillColor(Color::Red);
+	playerShape->setOrigin(playerShape->getSize().x/2, playerShape->getSize().y);
+	e->sprite = playerShape;
+}
+
+void IdleState::onUpdate(double dt)
+{
+	bool movement = sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z);
+
+	bool sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+
+	if (movement)
+		return e->setState(new WalkState(e));
+
+	if (movement && sprint)
+		return e->setState(new RunState(e));
+
+
+}
+
+void WalkState::onEnter()
+{
+	if (e->sprite) {
+		delete e->sprite;
+	}
+	RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
+	playerShape->setFillColor(Color::Green);
+	playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y);
+	e->sprite = playerShape;
+}
+
+void WalkState::onUpdate(double dt)
+{
+	bool movement = sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z);
+
+	bool sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+		e->dx += 2;
+
+	} if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
+		e->dx -= 2;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+		e->dy += 2;
+
+	} if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
+		e->dy -= 2;
+	}
+
+	if (abs(e->dx) <= 1 && abs(e->dy) <= 1) {
+		e->setState(new IdleState(e));
+	}
+
+	if (sprint && movement)
+		e->setState(new RunState(e));
+
+}
+
+void RunState::onEnter()
+{
+	if (e->sprite) {
+		delete e->sprite;
+	}
+	RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
+	playerShape->setFillColor(Color::Blue);
+	playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y);
+	e->sprite = playerShape;
+
+}
+
+void RunState::onUpdate(double dt)
+{
+	bool movement = sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z);
+
+	bool sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sprint) {
+		e->dx += 2 * 2;
+
+	} if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && sprint) {
+		e->dx -= 2 * 2;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S) && sprint) {
+		e->dy += 2 * 2;
+
+	} if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && sprint) {
+		e->dy -= 2 * 2;
+	}
+
+	if (abs(e->dx) <= 1 && abs(e->dy) <= 1) {
+		e->setState(new IdleState(e));
+	}
+
+	if (!sprint && movement)
+		e->setState(new WalkState(e));
+}
+
 

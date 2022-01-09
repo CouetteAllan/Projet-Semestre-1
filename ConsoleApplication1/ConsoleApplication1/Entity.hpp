@@ -2,12 +2,56 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Main.hpp>
 #include <SFML/Window.hpp>
-#include <stdlib.h>
-#include <math.h>
-#include "World.hpp"
+#include "Game.hpp"
 
 
 using namespace sf;
+class Entity;
+
+class State {
+public:
+	Entity*		e = nullptr;
+
+	virtual void onEnter() = 0;
+	virtual void onUpdate(double dt) = 0;
+
+};
+
+
+class IdleState : public State {
+public:
+	float timer = 1.0f;
+	float timerReset = timer;
+
+	IdleState(Entity* _e) {
+		e = _e;
+	}
+
+	virtual void onEnter();
+	virtual void onUpdate(double dt);
+};
+
+class WalkState : public State {
+public:
+	WalkState(Entity* _e) {
+		e = _e;
+	}
+
+	virtual void onEnter();
+	virtual void onUpdate(double dt);
+
+};
+
+class RunState : public State {
+public:
+	RunState(Entity* _e) {
+		e = _e;
+	}
+
+	virtual void onEnter();
+	virtual void onUpdate(double dt);
+
+};
 
 enum EType {
 	Player,
@@ -23,6 +67,7 @@ public:
 	//---------- Graphic Components ------------//
 	Shape*			sprite = nullptr;
 	bool			visible = true;
+	float			radius = 0.0f; //hitbox
 	EType			type;
 
 	//---------- Base Coordinates -------------------//
@@ -45,17 +90,20 @@ public:
 
 	const inline static int stride = 32;
 
+	int				HP = 5;
+
 
 	int click = 0;
 
 	Entity(Shape* shape, float _cx, float _cy, EType _type);
 	Entity();
 
-
+	State*			currState;
 	void setPosition(float x, float y);
+	void setState(State* currentState);
 
 	Vector2f getPosition();
-
+	void im();
 	void syncSprite();
 	void update(double dt);
 	void handleCollisions(Entity* e = nullptr);
@@ -68,13 +116,14 @@ public:
 class PlayerEntity : public Entity {
 public:
 
-	int				HP = 5;
 	float			speedMultiplier = 1.2f;
 
 	virtual void update(double dt);
+
+
 	
 	PlayerEntity(Shape* shape, float _cx, float _cy, EType _type = Player) : Entity(shape, _cx, _cy, _type) {
-		
+		currState = new IdleState(this);
 	}
 };
 
@@ -101,5 +150,15 @@ public:
 	virtual void update(double dt);
 	virtual void draw(RenderWindow &win);
 	void convert(int i);
+
+};
+
+class EnemyEntity : public Entity {
+
+	EnemyEntity(Shape* shape, float _cx, float _cy, EType _type = Enemy) : Entity(shape,_cx,_cy,_type) {
+		setState(new IdleState(this));
+	}
+
+	virtual void update(double dt);
 
 };

@@ -1,22 +1,11 @@
+#include "Game.hpp"
+#include <time.h>
+
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
 #include "Tool.hpp"
-
-#include <SFML/Graphics.hpp>
-#include <SFML/Main.hpp>
-#include <SFML/Window.hpp>
-#include "Entity.hpp"
-#include "World.hpp"
-#include <time.h>
-#include <stdio.h>
-#include <errno.h>
-
-#include "imgui.h"
-#include "imgui-SFML.h"
-
 using namespace ImGui;
-
 
 
 int main()
@@ -61,7 +50,7 @@ int main()
 	//----------------------------------------  GUN   --------------------------------------------------------------------
 	Clock timer;
 	bool enable = true;
-	static float fireRate = 1.0f;
+	static float fireRate = 5.0f;
 
 	int click = 0;
 	while (window.isOpen()) {
@@ -87,7 +76,7 @@ int main()
 			}
 		}
 		bool keyHit = false;
-
+/*
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
 			player->dy -= 2 * player->speedMultiplier;
 		}
@@ -100,7 +89,7 @@ int main()
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
 			player->dx -= 2 * player->speedMultiplier;
-		}
+		}*/
 
 
 		
@@ -119,8 +108,9 @@ int main()
 				dxy = dir / dirLen;
 			}
 			dxy *= 20.0f;
-			bullets->create(pos.x, pos.y, dxy.x, dxy.y);
+			bullets->create(pos.x, pos.y, dxy.x * 2, dxy.y * 2);
 			timer.restart();
+			player->click = 1;
 		}
 
 
@@ -136,26 +126,7 @@ int main()
 
 		ImGui::SFML::Update(window, clockImgui.restart());
 
-		Begin("Coordonates");
-		static bool modified;
-		modified = SliderInt("CX", &player->cx, 0.0f, wWidth / player->stride);
-		modified = SliderInt("CY", &player->cy, 0.0f, wHeight / player->stride - 2);
-		modified = SliderFloat("RX", &player->rx, 0.0f, 1.0f);
-		modified = SliderFloat("RY", &player->ry, 0.0f, 1.0f);
-		modified = Checkbox("Enable Gravity", &player->gravity);
-
-		Value("Coord X", player->sprite->getPosition().x);
-		Value("Coord Y", player->sprite->getPosition().y);
-		Value("Speed X", player->dx);
-		Value("Speed Y", player->dy);
-		Value("IsGrounded", player->isGrounded);
-		Value("Mouse Position X", mousePos.x);
-		Value("Mouse Position Y", mousePos.y);
-
-		SliderFloat("Friction", &player->friction, 0.0f, 1.0f);
-		if (modified)
-			player->syncSprite();
-		End();
+		player->im();
 
 		Begin("Gun");
 		SliderFloat("FireRate", &fireRate, 0.0f, 10.0f);

@@ -11,7 +11,8 @@ void World::draw(RenderWindow& win)
 			BulletEntity* bu = (BulletEntity*)o;
 			bu->draw(win);
 		}
-		o->draw(win);
+		else
+			o->draw(win);
 	}
 	for (auto r : grid) {
 		win.draw(*r);
@@ -26,7 +27,12 @@ void World::update(double dt)
 			BulletEntity* bu = (BulletEntity*)o;
 			bu->update(dt);
 		}
-		o->update(dt);
+		else if (o->type == Player) {
+			PlayerEntity* p = (PlayerEntity*)o;
+			p->update(dt);
+		}
+		else
+			o->update(dt);
 
 	}
 }
