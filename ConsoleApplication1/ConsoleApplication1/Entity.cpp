@@ -38,17 +38,17 @@ void Entity::setState(State * currentState)
 
 Vector2f Entity::getPosition()
 {
-	return Vector2f(xx,yy);
+	return Vector2f(xx, yy);
 }
 
 void Entity::im()
 {
 	using namespace ImGui;
 
-		Begin("Coordonates");
+	Begin("Coordonates");
 	static bool modified;
-	modified = SliderInt("CX", &cx, 0.0f, Game::W/stride);
-	modified = SliderInt("CY", &cy, 0.0f, Game::H / stride - 2);
+	modified = SliderInt("CX", &cx, 0.0f, Game::W / stride - 1);
+	modified = SliderInt("CY", &cy, 0.0f, Game::H / stride);
 	modified = SliderFloat("RX", &rx, 0.0f, 1.0f);
 	modified = SliderFloat("RY", &ry, 0.0f, 1.0f);
 	modified = Checkbox("Enable Gravity", &gravity);
@@ -70,71 +70,138 @@ void Entity::syncSprite()
 	xx = floor((cx + rx) * stride);
 	yy = floor((cy + ry) * stride);
 	sprite->setPosition(xx, yy);
+	if (circle)
+		circle->setPosition(xx, yy);
 }
 
 void Entity::update(double dt)
 {
-	rx += dx * dt;
-	dx *= friction;//0.96f
+	alive = HP > 0;
+	if (alive) {
+
+		rx += dx * dt;
+		dx *= friction;//0.96f
 
 
-	
-	if (isColliding(cx + 2, cy)&& rx >= 0.5f) {
-		rx = 0.6f;
-		dx = 0;
+
+		if (isColliding(cx + 2, cy) && rx >= 0.5f) {
+			rx = 0.5f;
+			dx = 0;
+		}
+
+		if (isColliding(cx - 1, cy) && rx <= 0.2f) {
+			rx = 0.2f;
+			dx = 0;
+		}
+
+		while (rx > 1) {
+
+			rx--;
+			cx++;
+		}
+		while (rx < 0) {
+
+			rx++;
+			cx--;
+		}
+
+
+		ry += dy * dt;
+		dy *= friction;
+
+		if ((isColliding(cx, cy - 1) && ry <= 0.5f) || isColliding(cx, cy + 1) && ry >= 0.5f) {
+			ry = 0.5f;
+			dy = 0;
+		}
+
+		while (ry > 1) {
+
+			ry--;
+			cy++;
+		}
+		while (ry < 0) {
+
+			ry++;
+			cy--;
+		}
+
+		collisionWithOtherEntities();
+
+		syncSprite();
 	}
-	
-	if (isColliding(cx - 1, cy)&& rx <= 0.2f) {
-		rx = 0.2f;
-		dx = 0;
-	}
+}
 
-	while (rx > 1) {
-
-		rx--;
-		cx++;
-	}
-	while (rx < 0) {
-
-		rx++; 
-		cx--;
-	}
-
-
-	ry += dy * dt;
-	dy *= friction;
-	
-	if (isColliding(cx, cy - 1) && ry <= 0.5f) {
-		ry = 0.5f;
-		dy = 0;
-	}
-	
-	if (isColliding(cx, cy + 1) && ry >= 0.5f) {
-		ry = 0.5f;
-		dy = 0;
-		isGrounded = true;
-	}
-	else
-		isGrounded = false;
-
-	while (ry > 1) {
-
-		ry--;
-		cy++;
-	}
-	while (ry < 0) {
-
-		ry++;
-		cy--;
-	}
-
-	syncSprite();
+inline bool Entity::overlaps(Entity * e) {
+	auto maxDist = radius + e->radius;
+	// classic distance formula
+	auto distSqr = (e->xx - xx)*(e->xx - xx) + (e->yy - yy)*(e->yy - yy);
+	return distSqr <= maxDist * maxDist;
 }
 
 
 void Entity::draw(RenderWindow &win)
 {
-	win.draw(*sprite);
+	if (alive) {
+
+		win.draw(*sprite);
+		win.draw(*circle);
+	}
+}
+
+void Entity::collisionWithOtherEntities()
+{
+	for (auto& o : World::objects) {
+		if (o != this && o->alive) {
+			// Fast distance check
+			if (abs(cx - o->cx) <= 2 && abs(cy - o->cy) <= 2) {
+				// Real distance check
+				auto dist = sqrt((o->xx - xx)*(o->xx - xx) + (o->yy - yy)*(o->yy - yy));
+				if (dist <= radius + o->radius) { //il y a overlapp
+					auto ang = atan2(o->yy - yy, o->xx - xx);
+					auto force = 700;
+					auto repelPower = (radius + o->radius - dist) / (radius + o->radius);
+					dx -= cos(ang) * repelPower * force;
+					dy -= sin(ang) * repelPower * force;
+					o->dx += cos(ang) * repelPower * force;
+					o->dy += sin(ang) * repelPower * force;
+
+					if (this->type == Player) {
+						HP -= 1;
+					}
+				}
+			}
+
+			if (o->type == Bullet && this->type == Enemy) {
+				BulletEntity* bu = (BulletEntity*)o;
+
+				for (size_t i = 0; i < bu->pxx.size(); i++)
+				{
+					if (!bu->hit[i]) {
+						if (abs(cx - bu->Arr_cx[i]) <= 2 && abs(cy - bu->Arr_cy[i]) <= 2) {
+							// Real distance check
+							auto dist = sqrt((bu->pxx[i] - xx)*(bu->pxx[i] - xx) + (bu->pyy[i] - yy)*(bu->pyy[i] - yy));
+							if (dist <= radius + bu->radiusBullet[i]) { //il y a overlapp
+								auto ang = atan2(bu->pyy[i] - yy, bu->pxx[i] - xx);
+								auto force = 700;
+								auto repelPower = (radius + bu->radiusBullet[i] - dist) / (radius + bu->radiusBullet[i]);
+								dx -= cos(ang) * repelPower * force;
+								dy -= sin(ang) * repelPower * force;
+
+								if (this->type == Enemy) {
+									static int id = 0;
+									this->HP -= 1;
+									id++;
+									printf("%i enemy touchey\n",id);
+									bu->hit[i] = true;
+								}
+							}
+						}
+					}
+				}
+			}
+
+		}
+	}
 }
 
 bool Entity::isColliding(int _cx, int _cy)
@@ -147,17 +214,11 @@ bool Entity::isColliding(int _cx, int _cy)
 		return true;
 	if (_cy > 720 / stride)
 		return true;
-	
-	for (auto& w : World::objects) {
-		if (w->type != Player || w->type != Enemy) {
 
-			if (w->cx == _cx && w->cy == _cy)
-				return true;
-		}
-	}
+	
 
 	return false;
-	
+
 }
 
 void PlayerEntity::update(double dt)
@@ -194,6 +255,8 @@ void BulletEntity::create(float _px, float _py, float _dx, float _dy) {
 			dx[i] = _dx;
 			dy[i] = _dy;
 			alive[i] = true;
+			radiusBullet[i] = 10.0f;
+			hit[i] = false;
 			return;
 		}
 	}
@@ -206,10 +269,14 @@ void BulletEntity::create(float _px, float _py, float _dx, float _dy) {
 	dx.push_back(_dx);
 	dy.push_back(_dy);
 	alive.push_back(true);
+	radiusBullet.push_back(10.0f);
+	hit.push_back(false);
+
+
 }
 
 void BulletEntity::update(double dt) {
-	
+
 	if (pxx.size() == 0)
 		return;
 
@@ -240,7 +307,7 @@ void BulletEntity::update(double dt) {
 			if (
 				(pxx[i] > 2000) || (pxx[i] < -10) ||
 				(pyy[i] > 1000) || (pyy[i] < -10)
-				) 
+				)
 			{
 				alive[i] = false;
 			}
@@ -276,13 +343,13 @@ void IdleState::onEnter()
 
 		RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
 		playerShape->setFillColor(Color::Red);
-		playerShape->setOrigin(playerShape->getSize().x/2, playerShape->getSize().y);
+		playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y / 2);
 		e->sprite = playerShape;
 	}
 	else {
 		RectangleShape* enemyShape = new RectangleShape(Vector2f(30, 60));
 		enemyShape->setFillColor(Color::Red);
-		enemyShape->setOrigin(enemyShape->getSize().x / 2, enemyShape->getSize().y);
+		enemyShape->setOrigin(enemyShape->getSize().x / 2, enemyShape->getSize().y / 2);
 		e->sprite = enemyShape;
 	}
 
@@ -328,13 +395,13 @@ void WalkState::onEnter()
 
 		RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
 		playerShape->setFillColor(Color::Green);
-		playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y);
+		playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y / 2);
 		e->sprite = playerShape;
 	}
 	else {
 		RectangleShape* playerShape = new RectangleShape(Vector2f(30, 60));
 		playerShape->setFillColor(Color::Green);
-		playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y);
+		playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y / 2);
 		e->sprite = playerShape;
 	}
 }
@@ -349,22 +416,22 @@ void WalkState::onUpdate(double dt)
 	bool sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 	if (e->type == Player) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			e->dx += 2;
+			e->dx += 300 * dt;
 
 		} if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-			e->dx -= 2;
+			e->dx -= 300 * dt;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-			e->dy += 2;
+			e->dy += 300 * dt;
 
 		} if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
-			e->dy -= 2;
+			e->dy -= 300 * dt;
 		}
 	}
 	else {
 		auto dir = Game::player->getPosition() - e->getPosition();
 		float dirLen = std::sqrt(dir.x * dir.x + dir.y * dir.y);
-		sf::Vector2f dxy(1, 0);
+		Vector2f dxy(1, 0);
 		if (dirLen) {
 			dxy = dir / dirLen;
 		}
@@ -394,7 +461,7 @@ void RunState::onEnter()
 	}
 	RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
 	playerShape->setFillColor(Color::Blue);
-	playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y);
+	playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y / 2);
 	e->sprite = playerShape;
 
 }

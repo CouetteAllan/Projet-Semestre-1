@@ -148,7 +148,7 @@ int main()
 		float radToDeg = 57.2958;
 		float angleC2M = atan2(characterToMouse.y, characterToMouse.x);
 		gun.setRotation(-angleC2M * radToDeg);
-		gun.setPosition(Game::player->getPosition().x + 5, Game::player->getPosition().y - 20);
+		gun.setPosition(Game::player->getPosition().x + 5, Game::player->getPosition().y);
 
 		//ImGui::ShowDemoWindow(&activeTool);
 

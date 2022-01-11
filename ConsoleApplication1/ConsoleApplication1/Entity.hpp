@@ -65,10 +65,11 @@ public:
 
 
 	//---------- Graphic Components ------------//
-	Shape*			sprite = nullptr;
-	bool			visible = true;
-	float			radius = 0.0f; //hitbox
-	EType			type;
+	Shape*				sprite = nullptr;
+	bool				visible = true;
+	float				radius = 0.0f; //hitbox
+	CircleShape*		circle = nullptr;
+	EType				type;
 
 	//---------- Base Coordinates -------------------//
 	int				cx = 0; //Numéro de la cellule en X
@@ -91,7 +92,7 @@ public:
 	const inline static int stride = 32;
 
 	int				HP = 5;
-
+	bool			alive = true;
 
 	int click = 0;
 
@@ -106,8 +107,9 @@ public:
 	void im();
 	void syncSprite();
 	void update(double dt);
-	void handleCollisions(Entity* e = nullptr);
+	bool overlaps(Entity* e);
 	void draw(RenderWindow &win);
+	void collisionWithOtherEntities();
 
 	bool isColliding(int _cx, int _cy);
 };
@@ -122,7 +124,12 @@ public:
 
 	
 	PlayerEntity(Shape* shape, float _cx, float _cy, EType _type = Player) : Entity(shape, _cx, _cy, _type) {
-		currState = new IdleState(this);
+		radius = 15.0f;
+		circle = new CircleShape(radius);
+		circle->setFillColor(Color(255, 0, 0, 100));
+		circle->setOrigin(radius,radius);
+		setState(new IdleState(this));
+		syncSprite();
 	}
 };
 
@@ -134,6 +141,10 @@ public:
 	std::vector<int>	Arr_cy; //Tableau Numéro de la cellule en Y
 	std::vector<float>	Arr_rx; //Tableau Ratio de la cellule en X allant de 0.0f à 1.0f
 	std::vector<float>	Arr_ry; //Tableau Ratio de la cellule en Y allant de 0.0f à 1.0f
+
+	std::vector<float>	radiusBullet;
+
+	std::vector<bool>	hit;
 
 	std::vector<float>	pxx;
 	std::vector<float>	pyy;
@@ -157,6 +168,21 @@ public:
 
 	EnemyEntity(Shape* shape, float _cx, float _cy, EType _type = Enemy) : Entity(shape,_cx,_cy,_type) {
 		setState(new IdleState(this));
+		radius = 25.0f;
+		circle = new CircleShape(radius);
+		circle->setFillColor(Color(255, 0, 0, 100));
+		circle->setOrigin(radius, radius);
+		HP = 8;
+	}
+
+	~EnemyEntity() {
+		if (sprite)
+			delete sprite;
+
+		if (circle)
+			delete circle;
+
+
 	}
 
 	virtual void update(double dt);
