@@ -55,10 +55,11 @@ public:
 
 enum EType {
 	Player,
-	Wall,
 	Enemy,
 	Bullet,
+	Dead,
 };
+
 
 class Entity {
 public:

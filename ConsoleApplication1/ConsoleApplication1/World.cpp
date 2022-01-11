@@ -17,6 +17,8 @@ void World::draw(RenderWindow& win)
 	for (auto r : grid) {
 		win.draw(*r);
 	}
+
+	Game::parts.draw(win);
 }
 
 void World::update(double dt)
@@ -39,4 +41,6 @@ void World::update(double dt)
 			o->update(dt);
 
 	}
+
+	Game::parts.update(dt);
 }

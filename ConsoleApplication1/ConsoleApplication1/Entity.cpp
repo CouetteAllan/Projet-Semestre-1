@@ -6,6 +6,7 @@ Entity::Entity(Shape * shape, float _cx, float _cy, EType _type) {
 	cy = _cy;
 	sprite = shape;
 	syncSprite();
+	audio = new Audio();
 }
 
 Entity::Entity() {
@@ -23,8 +24,6 @@ void Entity::setPosition(float x, float y)
 	cy = floor(yy / stride);
 	rx = (xx - cx * stride) / stride;
 	ry = (yy - cy * stride) / stride;
-
-
 }
 
 void Entity::setState(State * currentState)
@@ -130,8 +129,11 @@ void Entity::update( double dt)
 		syncSprite();
 	}
 	else {
-		if (type == Enemy) {
-
+		if (this->type == Enemy) {
+			Audio::explosion.play();
+			for (int i = 0; i < 8; ++i)
+				Game::particlesAt(this->getPosition());
+			this->type = Dead;
 		}
 	}
 }
@@ -186,11 +188,6 @@ void Entity::collisionWithOtherEntities()
 							// Real distance check
 							auto dist = sqrt((bu->pxx[i] - xx)*(bu->pxx[i] - xx) + (bu->pyy[i] - yy)*(bu->pyy[i] - yy));
 							if (dist <= radius + bu->radiusBullet[i]) { //il y a overlapp
-								auto ang = atan2(bu->pyy[i] - yy, bu->pxx[i] - xx);
-								auto force = 700;
-								auto repelPower = (radius + bu->radiusBullet[i] - dist) / (radius + bu->radiusBullet[i]);
-								dx -= cos(ang) * repelPower * force;
-								dy -= sin(ang) * repelPower * force;
 
 								if (this->type == Enemy) {
 									static int id = 0;

@@ -1,13 +1,20 @@
 #include "Game.hpp"
 int Game::score = 0;
+int Game::shake = 0;
+Particle Game::parts;
 std::vector<sf::Vector2i> Game::walls;
 PlayerEntity * Game::player = nullptr;
 Sound Audio::laserShoot;
 Music Audio::bgm;
-Sound Audio::hit;
+Sound Audio::explosion;
 Sound Audio::smallLaser;
 SoundBuffer Audio::laserShootBuffer;
-SoundBuffer Audio::hitBuffer;
+SoundBuffer Audio::explosionBuffer;
+
+void Game::particlesAt(sf::Vector2f pos) {
+	int flip = (rand() % 2 == 0) ? 1 : -1;
+	parts.create(pos.x, pos.y, flip * rand() % 200, -(rand() % 80) - 35);
+}
 
 void Game::init() {
 	walls.push_back(sf::Vector2i(5, 5));
@@ -47,8 +54,8 @@ Audio::Audio()
 {
 	if (laserShootBuffer.loadFromFile("res/laserShoot.wav"))
 		Audio::laserShoot.setBuffer(laserShootBuffer);
-	if (hitBuffer.loadFromFile("res/impactSound.wav"))
-		Audio::hit.setBuffer(hitBuffer);
+	if (explosionBuffer.loadFromFile("res/explosion.wav"))
+		Audio::explosion.setBuffer(explosionBuffer);
 	if (!bgm.openFromFile("res/bgm.wav"))
 		printf("isqjdfv");
 

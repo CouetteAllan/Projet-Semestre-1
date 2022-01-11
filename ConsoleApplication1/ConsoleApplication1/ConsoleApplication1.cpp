@@ -10,9 +10,7 @@ using namespace ImGui;
 
 int main()
 {
-	float wHeight = 720;
-	float wWidth = 1280;
-	sf::RenderWindow window(sf::VideoMode(wWidth, wHeight), "Jeu du turfu tavu");
+	sf::RenderWindow window(sf::VideoMode(Game::W, Game::H), "Jeu du turfu tavu");
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(144);
 
@@ -149,6 +147,10 @@ int main()
 		Checkbox("Enable", &enable);
 		End();
 			
+		Begin("Mouse");
+		Value("Coord X Mouse", mousePos.x);
+		Value("Coord Y Mouse", mousePos.y);
+		End();
 
 		sf::Vector2f characterToMouse(
 			mousePos.y - Game::player->getPosition().y,
