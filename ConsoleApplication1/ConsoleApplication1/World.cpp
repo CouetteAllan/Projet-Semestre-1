@@ -31,6 +31,10 @@ void World::update(double dt)
 			PlayerEntity* p = (PlayerEntity*)o;
 			p->update(dt);
 		}
+		else if (o->type == Enemy) {
+			EnemyEntity* en = (EnemyEntity*)o;
+			en->update(dt);
+		}
 		else
 			o->update(dt);
 

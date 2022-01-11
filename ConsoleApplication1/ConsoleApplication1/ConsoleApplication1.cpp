@@ -21,8 +21,12 @@ int main()
 	RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
 	playerShape->setFillColor(Color::Blue);
 	playerShape->setOrigin(10, 45);
+	
+	RectangleShape* enemyShape = new RectangleShape(Vector2f(20, 45));
+	playerShape->setFillColor(Color::Blue);
+	playerShape->setOrigin(10, 45);
 
-	PlayerEntity* player = new PlayerEntity(playerShape, 20, 15);
+	Game::player = new PlayerEntity(playerShape, 20, 15);
 
 	RectangleShape gun(sf::Vector2f(8, 32));
 	gun.setFillColor(sf::Color(0xFF, 0x00, 0x00));
@@ -40,9 +44,12 @@ int main()
 	//bool enterWasPressed = false;
 	BulletEntity* bullets = new BulletEntity();
 
+	EnemyEntity* enemy = new EnemyEntity(enemyShape, 10, 20);
+
 	World data;
-	data.objects.push_back((Entity*)player);
+	data.objects.push_back((Entity*)Game::player);
 	data.objects.push_back((Entity*)bullets);
+	data.objects.push_back((Entity*)enemy);
 	//----------------------------------------  IMGUI STUFF  -------------------------------------------------------------
 	float bgCol[3] = { 0,0,0 };
 	Clock clockImgui;
@@ -110,7 +117,7 @@ int main()
 			dxy *= 20.0f;
 			bullets->create(pos.x, pos.y, dxy.x * 2, dxy.y * 2);
 			timer.restart();
-			player->click = 1;
+			Game::player->click = 1;
 		}
 
 
@@ -126,7 +133,7 @@ int main()
 
 		ImGui::SFML::Update(window, clockImgui.restart());
 
-		player->im();
+		Game::im();
 
 		Begin("Gun");
 		SliderFloat("FireRate", &fireRate, 0.0f, 10.0f);
@@ -135,13 +142,13 @@ int main()
 			
 
 		sf::Vector2f characterToMouse(
-			mousePos.y - player->getPosition().y,
-			mousePos.x - player->getPosition().x);
+			mousePos.y - Game::player->getPosition().y,
+			mousePos.x - Game::player->getPosition().x);
 
 		float radToDeg = 57.2958;
 		float angleC2M = atan2(characterToMouse.y, characterToMouse.x);
 		gun.setRotation(-angleC2M * radToDeg);
-		gun.setPosition(player->getPosition().x + 5, player->getPosition().y - 20);
+		gun.setPosition(Game::player->getPosition().x + 5, Game::player->getPosition().y - 20);
 
 		//ImGui::ShowDemoWindow(&activeTool);
 

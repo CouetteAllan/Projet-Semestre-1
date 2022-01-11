@@ -45,7 +45,7 @@ void Entity::im()
 {
 	using namespace ImGui;
 
-	Begin("Coordonates");
+		Begin("Coordonates");
 	static bool modified;
 	modified = SliderInt("CX", &cx, 0.0f, Game::W/stride);
 	modified = SliderInt("CY", &cy, 0.0f, Game::H / stride - 2);
@@ -210,10 +210,9 @@ void BulletEntity::create(float _px, float _py, float _dx, float _dy) {
 
 void BulletEntity::update(double dt) {
 	
-
-
 	if (pxx.size() == 0)
 		return;
+
 	for (int i = 0; i < pxx.size(); ++i) {
 		if (alive[i]) {
 			Arr_rx[i] += dx[i] * dt;
@@ -273,28 +272,51 @@ void IdleState::onEnter()
 	if (e->sprite) {
 		delete e->sprite;
 	}
-	RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
-	playerShape->setFillColor(Color::Red);
-	playerShape->setOrigin(playerShape->getSize().x/2, playerShape->getSize().y);
-	e->sprite = playerShape;
+	if (e->type == Player) {
+
+		RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
+		playerShape->setFillColor(Color::Red);
+		playerShape->setOrigin(playerShape->getSize().x/2, playerShape->getSize().y);
+		e->sprite = playerShape;
+	}
+	else {
+		RectangleShape* enemyShape = new RectangleShape(Vector2f(30, 60));
+		enemyShape->setFillColor(Color::Red);
+		enemyShape->setOrigin(enemyShape->getSize().x / 2, enemyShape->getSize().y);
+		e->sprite = enemyShape;
+	}
+
 }
 
 void IdleState::onUpdate(double dt)
 {
+
 	bool movement = sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
-		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z);
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z) ||
+		abs(e->dx) > 0 && abs(e->dy) > 0;
 
 	bool sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 
 	if (movement)
 		return e->setState(new WalkState(e));
 
-	if (movement && sprint)
-		return e->setState(new RunState(e));
+	if (e->type == Player) {
 
+		if (movement && sprint)
+			return e->setState(new RunState(e));
+	}
+	else {
 
+		auto dir = Game::player->getPosition() - e->getPosition();
+		float dirLen = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+		sf::Vector2f dxy(1, 0);
+		if (dirLen) {
+			dxy = dir / dirLen;
+			return e->setState(new WalkState(e));
+		}
+	}
 }
 
 void WalkState::onEnter()
@@ -302,10 +324,19 @@ void WalkState::onEnter()
 	if (e->sprite) {
 		delete e->sprite;
 	}
-	RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
-	playerShape->setFillColor(Color::Green);
-	playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y);
-	e->sprite = playerShape;
+	if (e->type == Player) {
+
+		RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
+		playerShape->setFillColor(Color::Green);
+		playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y);
+		e->sprite = playerShape;
+	}
+	else {
+		RectangleShape* playerShape = new RectangleShape(Vector2f(30, 60));
+		playerShape->setFillColor(Color::Green);
+		playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y);
+		e->sprite = playerShape;
+	}
 }
 
 void WalkState::onUpdate(double dt)
@@ -316,26 +347,43 @@ void WalkState::onUpdate(double dt)
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z);
 
 	bool sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+	if (e->type == Player) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			e->dx += 2;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		e->dx += 2;
+		} if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
+			e->dx -= 2;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			e->dy += 2;
 
-	} if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-		e->dx -= 2;
+		} if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
+			e->dy -= 2;
+		}
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-		e->dy += 2;
-
-	} if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
-		e->dy -= 2;
+	else {
+		auto dir = Game::player->getPosition() - e->getPosition();
+		float dirLen = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+		sf::Vector2f dxy(1, 0);
+		if (dirLen) {
+			dxy = dir / dirLen;
+		}
+		dxy *= 3.0f;
+		e->dx = dxy.x;
+		e->dy = dxy.y;
 	}
+
 
 	if (abs(e->dx) <= 1 && abs(e->dy) <= 1) {
-		e->setState(new IdleState(e));
+		return e->setState(new IdleState(e));
 	}
 
-	if (sprint && movement)
-		e->setState(new RunState(e));
+	if (e->type == Player) {
+
+		if (sprint && movement)
+			return e->setState(new RunState(e));
+
+	}
 
 }
 
@@ -381,4 +429,10 @@ void RunState::onUpdate(double dt)
 		e->setState(new WalkState(e));
 }
 
-
+void EnemyEntity::update(double dt)
+{
+	if (currState) {
+		currState->onUpdate(dt);
+	}
+	Entity::update(dt);
+}

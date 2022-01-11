@@ -120,7 +120,6 @@ public:
 
 	virtual void update(double dt);
 
-
 	
 	PlayerEntity(Shape* shape, float _cx, float _cy, EType _type = Player) : Entity(shape, _cx, _cy, _type) {
 		currState = new IdleState(this);
@@ -154,6 +153,7 @@ public:
 };
 
 class EnemyEntity : public Entity {
+public:
 
 	EnemyEntity(Shape* shape, float _cx, float _cy, EType _type = Enemy) : Entity(shape,_cx,_cy,_type) {
 		setState(new IdleState(this));

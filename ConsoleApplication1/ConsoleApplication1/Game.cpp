@@ -1,12 +1,12 @@
 #include "Game.hpp"
 std::vector<sf::Vector2i> Game::walls;
-
+PlayerEntity * Game::player = nullptr;
 
 void Game::init() {
 	walls.push_back(sf::Vector2i(5, 5));
 }
 
-/*void Game::im() {
+void Game::im() {
 	using namespace ImGui;
 	static bool imOpened = true;
 	if (Begin("Game", &imOpened)) {
@@ -14,7 +14,7 @@ void Game::init() {
 
 	}
 	End();
-}*/
+}
 
 
 static bool isColliding(int ccx, int ccy) {
