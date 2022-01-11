@@ -1,6 +1,13 @@
 #include "Game.hpp"
+int Game::score = 0;
 std::vector<sf::Vector2i> Game::walls;
 PlayerEntity * Game::player = nullptr;
+Sound Audio::laserShoot;
+Music Audio::bgm;
+Sound Audio::hit;
+Sound Audio::smallLaser;
+SoundBuffer Audio::laserShootBuffer;
+SoundBuffer Audio::hitBuffer;
 
 void Game::init() {
 	walls.push_back(sf::Vector2i(5, 5));
@@ -34,4 +41,19 @@ static bool isColliding(int ccx, int ccy) {
 			return true;
 
 	return false;
+}
+
+Audio::Audio()
+{
+	if (laserShootBuffer.loadFromFile("res/laserShoot.wav"))
+		Audio::laserShoot.setBuffer(laserShootBuffer);
+	if (hitBuffer.loadFromFile("res/impactSound.wav"))
+		Audio::hit.setBuffer(hitBuffer);
+	if (!bgm.openFromFile("res/bgm.wav"))
+		printf("isqjdfv");
+
+	Audio::bgm.play();
+	Audio::bgm.setVolume(8.0f);
+	Audio::bgm.setLoop(true);
+
 }

@@ -74,7 +74,7 @@ void Entity::syncSprite()
 		circle->setPosition(xx, yy);
 }
 
-void Entity::update(double dt)
+void Entity::update( double dt)
 {
 	alive = HP > 0;
 	if (alive) {
@@ -128,6 +128,11 @@ void Entity::update(double dt)
 		collisionWithOtherEntities();
 
 		syncSprite();
+	}
+	else {
+		if (type == Enemy) {
+
+		}
 	}
 }
 
@@ -190,9 +195,12 @@ void Entity::collisionWithOtherEntities()
 								if (this->type == Enemy) {
 									static int id = 0;
 									this->HP -= 1;
+									if(HP != 0)
+										this->sprite->setFillColor((sprite->getFillColor() + Color(127/HP,0,0)) - Color(0,127/HP,0,0));
 									id++;
 									printf("%i enemy touchey\n",id);
 									bu->hit[i] = true;
+									bu->alive[i] = false;
 								}
 							}
 						}
@@ -271,7 +279,6 @@ void BulletEntity::create(float _px, float _py, float _dx, float _dy) {
 	alive.push_back(true);
 	radiusBullet.push_back(10.0f);
 	hit.push_back(false);
-
 
 }
 

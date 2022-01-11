@@ -91,7 +91,8 @@ public:
 
 	const inline static int stride = 32;
 
-	int				HP = 5;
+	int				HPMax = 5;
+	int				HP;
 	bool			alive = true;
 
 	int click = 0;
@@ -106,7 +107,7 @@ public:
 	Vector2f getPosition();
 	void im();
 	void syncSprite();
-	void update(double dt);
+	void update( double dt);
 	bool overlaps(Entity* e);
 	void draw(RenderWindow &win);
 	void collisionWithOtherEntities();
@@ -130,6 +131,7 @@ public:
 		circle->setOrigin(radius,radius);
 		setState(new IdleState(this));
 		syncSprite();
+		HP = HPMax;
 	}
 };
 
@@ -172,7 +174,8 @@ public:
 		circle = new CircleShape(radius);
 		circle->setFillColor(Color(255, 0, 0, 100));
 		circle->setOrigin(radius, radius);
-		HP = 8;
+		HPMax = 8;
+		HP = HPMax;
 	}
 
 	~EnemyEntity() {

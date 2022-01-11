@@ -46,10 +46,14 @@ int main()
 
 	EnemyEntity* enemy = new EnemyEntity(enemyShape, 10, 20);
 
+	Audio audio;
+
 	World data;
 	data.objects.push_back((Entity*)Game::player);
 	data.objects.push_back((Entity*)bullets);
 	data.objects.push_back((Entity*)enemy);
+
+	bool pause = false;
 	//----------------------------------------  IMGUI STUFF  -------------------------------------------------------------
 	float bgCol[3] = { 0,0,0 };
 	Clock clockImgui;
@@ -63,6 +67,8 @@ int main()
 	while (window.isOpen()) {
 		sf::Event event;
 		double dt = tExitFrame - tEnterFrame;
+		if (pause)
+			dt = 0;
 		tEnterFrame = getTimeStamp(); //calculer le temps entre chaque frame pour les vitesses
 		while (window.pollEvent(event)) {
 			ImGui::SFML::ProcessEvent(event);//Intégration IMGUI
@@ -76,6 +82,8 @@ int main()
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::Escape)
 					window.close();
+				if (event.key.code == sf::Keyboard::Space)
+					pause = !pause;
 				break;
 
 			default:
@@ -106,7 +114,7 @@ int main()
 
 		bool timerFinished = timer.getElapsedTime() >= sf::seconds(1.0f) / fireRate;
 
-		if (mouseLeftIsPressed && timerFinished && enable) {
+		if (mouseLeftIsPressed && timerFinished && enable && Game::player->alive) {
 			auto pos = gun.getPosition();
 			auto dir = mousePos - pos;
 			float dirLen = std::sqrt(dir.x * dir.x + dir.y * dir.y);
@@ -116,6 +124,7 @@ int main()
 			}
 			dxy *= 20.0f;
 			bullets->create(pos.x, pos.y, dxy.x * 2, dxy.y * 2);
+			audio.laserShoot.play();
 			timer.restart();
 			Game::player->click = 1;
 		}
@@ -147,8 +156,10 @@ int main()
 
 		float radToDeg = 57.2958;
 		float angleC2M = atan2(characterToMouse.y, characterToMouse.x);
-		gun.setRotation(-angleC2M * radToDeg);
-		gun.setPosition(Game::player->getPosition().x + 5, Game::player->getPosition().y);
+		if (!pause) {
+			gun.setRotation(-angleC2M * radToDeg);
+			gun.setPosition(Game::player->getPosition().x + 5, Game::player->getPosition().y);
+		}
 
 		//ImGui::ShowDemoWindow(&activeTool);
 
@@ -166,7 +177,8 @@ int main()
 		////////////////////
 		//DRAW
 		data.draw(window);
-		window.draw(gun);
+		if(Game::player->alive)
+			window.draw(gun);
 		//game elems
 
 
