@@ -6,12 +6,14 @@
 #include "World.hpp"
 #include "Particles.hpp"
 #include "Entity.hpp"
+#include "SpawnerEnemy.hpp"
 #include <algorithm>
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
+#include <time.h>
 #include <stdlib.h>
 #include <math.h>
 

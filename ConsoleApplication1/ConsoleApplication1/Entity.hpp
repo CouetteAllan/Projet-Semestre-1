@@ -84,8 +84,7 @@ public:
 	float				dx = 0.0f;
 	float				dy = 0.0f;
 	inline static float friction = 0.827f;
-	bool				isGrounded = false;
-	bool				gravity = true;
+	float				speedMultiplier = 1;
 
 
 	//-------------- Resulting Coordinates -----------------//
@@ -94,7 +93,7 @@ public:
 
 	const inline static int stride = 32;
 
-	int				HPMax = 5;
+	int				HPMax = 2;
 	int				HP;
 	bool			alive = true;
 
@@ -148,6 +147,7 @@ public:
 			spr->setScale(0.5f, 0.5f);
 		}
 		syncSprite();
+		HPMax = 5;
 		HP = HPMax;
 		
 	}
@@ -189,12 +189,9 @@ public:
 
 	EnemyEntity(Shape* shape, float _cx, float _cy, EType _type = Enemy) : Entity(shape,_cx,_cy,_type) {
 		setState(new IdleState(this));
-		radius = 25.0f;
 		circle = new CircleShape(radius);
 		circle->setFillColor(Color(255, 0, 0, 100));
 		circle->setOrigin(radius, radius);
-		HPMax = 8;
-		HP = HPMax;
 	}
 
 	~EnemyEntity() {

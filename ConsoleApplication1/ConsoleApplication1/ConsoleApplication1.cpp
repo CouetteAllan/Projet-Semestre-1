@@ -20,14 +20,11 @@ int main()
 	playerShape->setFillColor(Color::Blue);
 	playerShape->setOrigin(10, 45.0f/2.0f);
 	
-	RectangleShape* enemyShape = new RectangleShape(Vector2f(20, 45));
-	enemyShape->setFillColor(Color::Blue);
-	enemyShape->setOrigin(10, 45);
 
 	Game::player = new PlayerEntity(playerShape, 20, 15);
 
 
-	
+	SpawnerEnemy spawn;
 
 
 	double tStart = getTimeStamp();
@@ -39,24 +36,28 @@ int main()
 	//bool enterWasPressed = false;
 	BulletEntity* bullets = new BulletEntity();
 
-	EnemyEntity* enemy = new EnemyEntity(enemyShape, 10, 20);
+	srand(time(NULL));
 
 	Audio audio;
 
-	World data;
-	data.objects.push_back((Entity*)Game::player);
-	data.objects.push_back((Entity*)bullets);
-	data.objects.push_back((Entity*)enemy);
+	World::objects.push_back(Game::player);
+	World::objects.push_back(bullets);
+
+	spawn.spawnAtLocation(12, 13);
+	spawn.spawnAtLocation(14, 2);
+	spawn.spawnAtLocation(11, 2);
+	spawn.spawnAtLocation(8, 2);
 
 	sf::Vector2i winPos = window.getPosition();
-
+	sf::Time  sec = sf::seconds(5.0f);
 	bool pause = false;
 	//----------------------------------------  IMGUI STUFF  -------------------------------------------------------------
 	float bgCol[3] = { 0,0,0 };
 	Clock clockImgui;
 
 	//----------------------------------------  GUN   --------------------------------------------------------------------
-	Clock timer;
+	Clock timerAttack;
+	Clock timerSpawn;
 	bool enable = true;
 	static float fireRate = 5.0f;
 
@@ -109,7 +110,16 @@ int main()
 		bool mouseIsReleased = (!mouseLeftIsPressed && mouseLeftWasPressed);
 		mousePos = (Vector2f)Mouse::getPosition(window);
 
-		bool timerFinished = timer.getElapsedTime() >= sf::seconds(1.0f) / fireRate;
+		bool timerFinished = timerAttack.getElapsedTime() >= sf::seconds(1.0f) / fireRate;
+		bool timerSpawnFinished = timerSpawn.getElapsedTime() >= sec;
+
+		if (timerSpawnFinished) {
+			int randomCX = rand() % (Game::W / Entity::stride) + 1;
+			int randomCY = rand() % (Game::W / Entity::stride) + 1;
+
+			spawn.spawnAtLocation(randomCX, randomCY);
+			timerSpawn.restart();
+		}
 
 		if (mouseLeftIsPressed && timerFinished && enable && Game::player->alive) {
 			auto pos = Game::player->getPosition();
@@ -122,7 +132,7 @@ int main()
 			dxy *= 20.0f;
 			bullets->create(pos.x, pos.y, dxy.x * 2, dxy.y * 2);
 			audio.laserShoot.play();
-			timer.restart();
+			timerAttack.restart();
 			Game::player->click = 1;
 		}
 
@@ -166,10 +176,10 @@ int main()
 
 		////////////////////
 		//UPDATE
-		data.update(dt);
+		World::update(dt);
 		////////////////////
 		//DRAW
-		data.draw(window);
+		World::draw(window);
 		//game elems
 
 		if (Game::shake > 0) {

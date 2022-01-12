@@ -11,8 +11,8 @@ public:
 	static std::vector<Entity*> objects;
 
 
-	void draw(sf::RenderWindow& win);
-	void update(double dt);
+	static void draw(sf::RenderWindow& win);
+	static void update(double dt);
 
 
 };

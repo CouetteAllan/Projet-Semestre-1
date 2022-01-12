@@ -49,13 +49,11 @@ void Entity::im()
 	modified = SliderInt("CY", &cy, 0.0f, Game::H / stride);
 	modified = SliderFloat("RX", &rx, 0.0f, 1.0f);
 	modified = SliderFloat("RY", &ry, 0.0f, 1.0f);
-	modified = Checkbox("Enable Gravity", &gravity);
 
 	Value("Coord X", sprite->getPosition().x);
 	Value("Coord Y", sprite->getPosition().y);
 	Value("Speed X", dx);
 	Value("Speed Y", dy);
-	Value("IsGrounded", isGrounded);
 
 	SliderFloat("Friction", &friction, 0.0f, 1.0f);
 	if (modified)
@@ -68,8 +66,11 @@ void Entity::syncSprite()
 	xx = floor((cx + rx) * stride);
 	yy = floor((cy + ry) * stride);
 
-	if (circle)
+	if (circle) {
+		circle->setRadius(radius);
+		circle->setOrigin(radius, radius);
 		circle->setPosition(xx, yy);
+	}
 
 	if (!spr) {
 		sprite->setPosition(xx, yy);
@@ -92,7 +93,7 @@ void Entity::update( double dt)
 	alive = HP > 0;
 	if (alive) {
 
-		rx += dx * dt;
+		rx += dx * dt * speedMultiplier;
 		dx *= friction;//0.96f
 
 
@@ -119,7 +120,7 @@ void Entity::update( double dt)
 		}
 
 
-		ry += dy * dt;
+		ry += dy * dt * speedMultiplier;
 		dy *= friction;
 
 		if ((isColliding(cx, cy - 1) && ry <= 0.5f) || isColliding(cx, cy + 1) && ry >= 0.5f) {
@@ -243,20 +244,18 @@ void PlayerEntity::update(double dt)
 	if (timer != 0) {
 		timer -= dt;
 
-		Color sprColor = sprite->getFillColor();
-		static float tint = 300;
-		if (sprColor.a <= 170)
-			tint = -tint;
-		else
-			tint = -tint;
+		Color sprColor = spr->getColor();
+		static float tint = 200 * dt;
 
-		sprColor.a += tint * dt;
-
-		sprite->setFillColor(sprColor);
+		sprColor.a -= tint;
+		if (sprColor.a <= 100) {
+			sprColor.a = 100;
+		}
+		spr->setColor(sprColor);
 		if (timer <= 0) {
 
 
-			sprite->setFillColor(Color::Blue);
+			spr->setColor(Color::White);
 
 			timer = 0;
 		}
@@ -422,7 +421,7 @@ void IdleState::onUpdate(double dt)
 }
 
 void WalkState::onEnter()
-{
+{ /*
 	if (e->sprite && e->type == Enemy) {
 		delete e->sprite;
 		RectangleShape* playerShape = new RectangleShape(Vector2f(30, 60));
@@ -430,7 +429,7 @@ void WalkState::onEnter()
 		playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y / 2);
 		e->sprite = playerShape;
 	}
-	
+	*/
 }
 
 void WalkState::onUpdate(double dt)
@@ -481,7 +480,7 @@ void WalkState::onUpdate(double dt)
 
 	}
 
-	if (abs(e->dx) <= 1 && abs(e->dy) <= 1) {
+	if (abs(e->dx) <= 1 && abs(e->dy) <= 1	) {
 		return e->setState(new IdleState(e));
 	}
 
