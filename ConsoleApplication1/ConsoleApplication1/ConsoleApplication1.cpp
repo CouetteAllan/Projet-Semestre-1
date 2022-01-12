@@ -18,17 +18,14 @@ int main()
 
 	RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
 	playerShape->setFillColor(Color::Blue);
-	playerShape->setOrigin(10, 45);
+	playerShape->setOrigin(10, 45.0f/2.0f);
 	
 	RectangleShape* enemyShape = new RectangleShape(Vector2f(20, 45));
-	playerShape->setFillColor(Color::Blue);
-	playerShape->setOrigin(10, 45);
+	enemyShape->setFillColor(Color::Blue);
+	enemyShape->setOrigin(10, 45);
 
 	Game::player = new PlayerEntity(playerShape, 20, 15);
 
-	RectangleShape gun(sf::Vector2f(8, 32));
-	gun.setFillColor(sf::Color(0xFF, 0x00, 0x00));
-	gun.setOrigin(4, 10);
 
 	
 
@@ -50,6 +47,8 @@ int main()
 	data.objects.push_back((Entity*)Game::player);
 	data.objects.push_back((Entity*)bullets);
 	data.objects.push_back((Entity*)enemy);
+
+	sf::Vector2i winPos = window.getPosition();
 
 	bool pause = false;
 	//----------------------------------------  IMGUI STUFF  -------------------------------------------------------------
@@ -113,7 +112,7 @@ int main()
 		bool timerFinished = timer.getElapsedTime() >= sf::seconds(1.0f) / fireRate;
 
 		if (mouseLeftIsPressed && timerFinished && enable && Game::player->alive) {
-			auto pos = gun.getPosition();
+			auto pos = Game::player->getPosition();
 			auto dir = mousePos - pos;
 			float dirLen = std::sqrt(dir.x * dir.x + dir.y * dir.y);
 			sf::Vector2f dxy(1, 0);
@@ -152,16 +151,8 @@ int main()
 		Value("Coord Y Mouse", mousePos.y);
 		End();
 
-		sf::Vector2f characterToMouse(
-			mousePos.y - Game::player->getPosition().y,
-			mousePos.x - Game::player->getPosition().x);
 
-		float radToDeg = 57.2958;
-		float angleC2M = atan2(characterToMouse.y, characterToMouse.x);
-		if (!pause) {
-			gun.setRotation(-angleC2M * radToDeg);
-			gun.setPosition(Game::player->getPosition().x + 5, Game::player->getPosition().y);
-		}
+		Game::player->setMousePos(mousePos);
 
 		//ImGui::ShowDemoWindow(&activeTool);
 
@@ -179,10 +170,16 @@ int main()
 		////////////////////
 		//DRAW
 		data.draw(window);
-		if(Game::player->alive)
-			window.draw(gun);
 		//game elems
 
+		if (Game::shake > 0) {
+			int flip1 = (rand() % 2 == 0) ? 1 : -1;
+			int flip2 = (rand() % 2 == 0) ? 1 : -1;
+			window.setPosition(winPos + sf::Vector2i(0 + rand() % 10 * flip1, 0 + rand() % 8 * flip2));
+		}
+		else
+			window.setPosition(winPos);
+		Game::shake--;
 
 
 		//ui

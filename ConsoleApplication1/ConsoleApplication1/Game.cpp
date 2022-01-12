@@ -7,13 +7,13 @@ PlayerEntity * Game::player = nullptr;
 Sound Audio::laserShoot;
 Music Audio::bgm;
 Sound Audio::explosion;
-Sound Audio::smallLaser;
-SoundBuffer Audio::laserShootBuffer;
-SoundBuffer Audio::explosionBuffer;
+Sound Audio::gameOver;
+Sound Audio::hit;
 
 void Game::particlesAt(sf::Vector2f pos) {
-	int flip = (rand() % 2 == 0) ? 1 : -1;
-	parts.create(pos.x, pos.y, flip * rand() % 200, -(rand() % 80) - 35);
+	int flip1 = (rand() % 2 == 0) ? 1 : -1;
+	int flip2 = (rand() % 2 == 0) ? 1 : -1;
+	parts.create(pos.x, pos.y, flip1 * rand() % 200, flip2 * (rand() % 160) - 35);
 }
 
 void Game::init() {
@@ -56,11 +56,17 @@ Audio::Audio()
 		Audio::laserShoot.setBuffer(laserShootBuffer);
 	if (explosionBuffer.loadFromFile("res/explosion.wav"))
 		Audio::explosion.setBuffer(explosionBuffer);
-	if (!bgm.openFromFile("res/bgm.wav"))
-		printf("isqjdfv");
 
-	Audio::bgm.play();
-	Audio::bgm.setVolume(8.0f);
-	Audio::bgm.setLoop(true);
+	if (gameOverBuffer.loadFromFile("res/gameOver.wav"))
+		Audio::gameOver.setBuffer(gameOverBuffer);
+	
+	if (hitBuffer.loadFromFile("res/impactSound.wav"))
+		Audio::hit.setBuffer(hitBuffer);
+
+	if (bgm.openFromFile("res/bgm.wav")) {
+		Audio::bgm.play();
+		Audio::bgm.setVolume(8.5f);
+		Audio::bgm.setLoop(true);
+	}
 
 }

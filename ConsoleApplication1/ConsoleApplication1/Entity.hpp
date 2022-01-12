@@ -67,6 +67,8 @@ public:
 
 	//---------- Graphic Components ------------//
 	Shape*				sprite = nullptr;
+	Sprite*				spr = nullptr;
+	Texture				text;
 	bool				visible = true;
 	float				radius = 0.0f; //hitbox
 	CircleShape*		circle = nullptr;
@@ -96,9 +98,13 @@ public:
 	int				HP;
 	bool			alive = true;
 
+	Vector2f	playerOrientation;
+	void setMousePos(Vector2f mousePos);
+
 	int click = 0;
 
 	Entity(Shape* shape, float _cx, float _cy, EType _type);
+	Entity(float _cx, float _cy, EType _type);
 	Entity();
 
 	State*			currState;
@@ -114,25 +120,36 @@ public:
 	void collisionWithOtherEntities();
 
 	bool isColliding(int _cx, int _cy);
+protected:
+	float timer = 0;
+	float timerReset = 2;
 };
 
 
 class PlayerEntity : public Entity {
 public:
-
-	float			speedMultiplier = 1.2f;
+	Clock clock;
+	IntRect		textureRect;
 
 	virtual void update(double dt);
-
 	
 	PlayerEntity(Shape* shape, float _cx, float _cy, EType _type = Player) : Entity(shape, _cx, _cy, _type) {
-		radius = 15.0f;
+		radius = 18.0f;
 		circle = new CircleShape(radius);
 		circle->setFillColor(Color(255, 0, 0, 100));
 		circle->setOrigin(radius,radius);
 		setState(new IdleState(this));
+
+		if (text.loadFromFile("res/spriteSheetHero.png")) {
+			spr = new Sprite(text);
+			textureRect = IntRect(0, 0, 128, 128);
+			spr->setTextureRect(textureRect);
+			spr->setOrigin(64, 54);
+			spr->setScale(0.5f, 0.5f);
+		}
 		syncSprite();
 		HP = HPMax;
+		
 	}
 };
 
@@ -156,6 +173,7 @@ public:
 	std::vector<float>	dy;
 
 	std::vector<bool>	alive;
+
 
 	BulletEntity();
 

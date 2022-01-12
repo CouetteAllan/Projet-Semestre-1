@@ -6,7 +6,6 @@ Entity::Entity(Shape * shape, float _cx, float _cy, EType _type) {
 	cy = _cy;
 	sprite = shape;
 	syncSprite();
-	audio = new Audio();
 }
 
 Entity::Entity() {
@@ -68,9 +67,24 @@ void Entity::syncSprite()
 {
 	xx = floor((cx + rx) * stride);
 	yy = floor((cy + ry) * stride);
-	sprite->setPosition(xx, yy);
+
 	if (circle)
 		circle->setPosition(xx, yy);
+
+	if (!spr) {
+		sprite->setPosition(xx, yy);
+	}
+	else {
+		spr->setPosition(xx, yy);
+		sf::Vector2f characterToMouse(
+			playerOrientation.y -getPosition().y,
+			playerOrientation.x - getPosition().x);
+
+		float radToDeg = 57.2958;
+		float angleC2M = atan2(characterToMouse.y, characterToMouse.x);
+		spr->setRotation(-angleC2M * radToDeg);
+		
+	}
 }
 
 void Entity::update( double dt)
@@ -128,14 +142,6 @@ void Entity::update( double dt)
 
 		syncSprite();
 	}
-	else {
-		if (this->type == Enemy) {
-			Audio::explosion.play();
-			for (int i = 0; i < 8; ++i)
-				Game::particlesAt(this->getPosition());
-			this->type = Dead;
-		}
-	}
 }
 
 inline bool Entity::overlaps(Entity * e) {
@@ -149,9 +155,10 @@ inline bool Entity::overlaps(Entity * e) {
 void Entity::draw(RenderWindow &win)
 {
 	if (alive) {
-
-		win.draw(*sprite);
-		win.draw(*circle);
+		if (!spr)
+			win.draw(*sprite);
+		else
+			win.draw(*spr);
 	}
 }
 
@@ -172,8 +179,11 @@ void Entity::collisionWithOtherEntities()
 					o->dx += cos(ang) * repelPower * force;
 					o->dy += sin(ang) * repelPower * force;
 
-					if (this->type == Player) {
+					if (this->type == Player && this->timer == 0) {
 						HP -= 1;
+						Audio::hit.play();
+						Game::shake = 75;
+						timer = timerReset;
 					}
 				}
 			}
@@ -190,12 +200,9 @@ void Entity::collisionWithOtherEntities()
 							if (dist <= radius + bu->radiusBullet[i]) { //il y a overlapp
 
 								if (this->type == Enemy) {
-									static int id = 0;
 									this->HP -= 1;
 									if(HP != 0)
 										this->sprite->setFillColor((sprite->getFillColor() + Color(127/HP,0,0)) - Color(0,127/HP,0,0));
-									id++;
-									printf("%i enemy touchey\n",id);
 									bu->hit[i] = true;
 									bu->alive[i] = false;
 								}
@@ -232,6 +239,46 @@ void PlayerEntity::update(double dt)
 		currState->onUpdate(dt);
 	}
 	Entity::update(dt);
+	
+	if (timer != 0) {
+		timer -= dt;
+
+		Color sprColor = sprite->getFillColor();
+		static float tint = 300;
+		if (sprColor.a <= 170)
+			tint = -tint;
+		else
+			tint = -tint;
+
+		sprColor.a += tint * dt;
+
+		sprite->setFillColor(sprColor);
+		if (timer <= 0) {
+
+
+			sprite->setFillColor(Color::Blue);
+
+			timer = 0;
+		}
+	}
+
+	if (!alive) {
+		Audio::explosion.play();
+		Game::parts.part.setColor(Color(0,0,255,255));
+		for (int i = 0; i < 15; ++i)
+			Game::particlesAt(this->getPosition());
+		Game::shake += 300;
+		this->type = Dead;
+		Audio::bgm.stop();
+		Audio::gameOver.setVolume(20.0f);
+		Audio::gameOver.play();
+	}
+
+}
+
+void Entity::setMousePos(Vector2f _mousePos)
+{
+	playerOrientation = _mousePos;
 }
 
 
@@ -241,8 +288,8 @@ BulletEntity::BulletEntity()
 	int t = 10;
 	b = sf::CircleShape(t);
 	b.setOutlineThickness(2);
-	b.setFillColor(sf::Color::Yellow);
-	b.setOutlineColor(sf::Color::Red);
+	b.setFillColor(sf::Color::Blue);
+	b.setOutlineColor(sf::Color::White);
 	b.setOrigin(sf::Vector2f(t, t));
 	type = Bullet;
 
@@ -340,22 +387,7 @@ void BulletEntity::convert(int i)
 
 void IdleState::onEnter()
 {
-	if (e->sprite) {
-		delete e->sprite;
-	}
-	if (e->type == Player) {
-
-		RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
-		playerShape->setFillColor(Color::Red);
-		playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y / 2);
-		e->sprite = playerShape;
-	}
-	else {
-		RectangleShape* enemyShape = new RectangleShape(Vector2f(30, 60));
-		enemyShape->setFillColor(Color::Red);
-		enemyShape->setOrigin(enemyShape->getSize().x / 2, enemyShape->getSize().y / 2);
-		e->sprite = enemyShape;
-	}
+	
 
 }
 
@@ -392,22 +424,14 @@ void IdleState::onUpdate(double dt)
 
 void WalkState::onEnter()
 {
-	if (e->sprite) {
+	if (e->sprite && e->type == Enemy) {
 		delete e->sprite;
-	}
-	if (e->type == Player) {
-
-		RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
-		playerShape->setFillColor(Color::Green);
-		playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y / 2);
-		e->sprite = playerShape;
-	}
-	else {
 		RectangleShape* playerShape = new RectangleShape(Vector2f(30, 60));
 		playerShape->setFillColor(Color::Green);
 		playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y / 2);
 		e->sprite = playerShape;
 	}
+	
 }
 
 void WalkState::onUpdate(double dt)
@@ -443,7 +467,18 @@ void WalkState::onUpdate(double dt)
 		e->dx = dxy.x;
 		e->dy = dxy.y;
 	}
+	if (e->spr) {
+		PlayerEntity* p = (PlayerEntity*)e;
+		if (p->clock.getElapsedTime().asSeconds() > 0.3f) {
+			if (p->textureRect.left == 0)
+				p->textureRect.left = 128;
+			else
+				p->textureRect.left = 0;
+			p->spr->setTextureRect(p->textureRect);
+			p->clock.restart();
+		}
 
+	}
 
 	if (abs(e->dx) <= 1 && abs(e->dy) <= 1) {
 		return e->setState(new IdleState(e));
@@ -460,13 +495,7 @@ void WalkState::onUpdate(double dt)
 
 void RunState::onEnter()
 {
-	if (e->sprite) {
-		delete e->sprite;
-	}
-	RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
-	playerShape->setFillColor(Color::Blue);
-	playerShape->setOrigin(playerShape->getSize().x / 2, playerShape->getSize().y / 2);
-	e->sprite = playerShape;
+
 
 }
 
@@ -506,4 +535,13 @@ void EnemyEntity::update(double dt)
 		currState->onUpdate(dt);
 	}
 	Entity::update(dt);
+
+	if (!alive) {
+		Audio::explosion.play();
+		Game::parts.part.setColor(Color(255, 0, 0, 255));
+		for (int i = 0; i < 10; ++i)
+			Game::particlesAt(this->getPosition());
+		this->type = Dead;
+	}
+
 }

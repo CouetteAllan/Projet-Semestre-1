@@ -48,14 +48,17 @@ class Audio {
 public:
 	Audio();
 	static	sf::Sound			laserShoot;
-	static sf::SoundBuffer		laserShootBuffer;
+	sf::SoundBuffer				laserShootBuffer;
 		
 	static	sf::Music			bgm;
 	
 	static	sf::Sound			explosion;
-	static	sf::SoundBuffer		explosionBuffer;
+	sf::SoundBuffer				explosionBuffer;
 		
-	static	sf::Sound			smallLaser;
-	static	sf::SoundBuffer		smallLaserBuffer;
+	static	sf::Sound			gameOver;
+	sf::SoundBuffer				gameOverBuffer;
+	
+	static	sf::Sound			hit;
+	sf::SoundBuffer				hitBuffer;
 };
 

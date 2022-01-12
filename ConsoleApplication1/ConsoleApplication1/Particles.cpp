@@ -3,7 +3,7 @@
 Particle::Particle() {
 	if (particleText.loadFromFile("res/particle.png"))
 		part.setTexture(particleText);
-	part.setScale(Vector2f(0.3f,0.3f));
+	part.setScale(Vector2f(0.25f,0.25f));
 }
 
 void Particle::create(float _px, float _py, float _dx, float _dy) {
