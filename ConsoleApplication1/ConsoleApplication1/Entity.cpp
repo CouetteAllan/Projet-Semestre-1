@@ -387,7 +387,6 @@ void BulletEntity::convert(int i)
 
 void IdleState::onEnter()
 {
-	
 
 }
 
@@ -398,7 +397,7 @@ void IdleState::onUpdate(double dt)
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z) ||
-		abs(e->dx) > 0 && abs(e->dy) > 0;
+		abs(e->dx) > 0.1f && abs(e->dy) >= 0.1f;
 
 	bool sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 
@@ -436,24 +435,26 @@ void WalkState::onEnter()
 
 void WalkState::onUpdate(double dt)
 {
-	bool movement = sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
+	bool movement = 
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z);
 
 	bool sprint = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+
 	if (e->type == Player) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			e->dx += 300 * dt;
-
-		} if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-			e->dx -= 300 * dt;
+			e->dx += 300.0f * dt;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
+			e->dx -= 300.0f * dt;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-			e->dy += 300 * dt;
-
-		} if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
-			e->dy -= 300 * dt;
+			e->dy += 300.0f * dt;
+		} 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
+			e->dy -= 300.0f * dt;
 		}
 	}
 	else {

@@ -53,8 +53,8 @@ c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplicat
           ]
 c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(371): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
 c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(371): warning C4267: 'initialisation' : conversion de 'size_t' en 'const int', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(447): warning C4244: '+=' : conversion de 'double' en 'float', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(450): warning C4244: '-=' : conversion de 'double' en 'float', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(453): warning C4244: '+=' : conversion de 'double' en 'float', perte possible de données
-c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(456): warning C4244: '-=' : conversion de 'double' en 'float', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(448): warning C4244: '+=' : conversion de 'double' en 'float', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(451): warning C4244: '-=' : conversion de 'double' en 'float', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(454): warning C4244: '+=' : conversion de 'double' en 'float', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(457): warning C4244: '-=' : conversion de 'double' en 'float', perte possible de données
   ConsoleApplication1.vcxproj -> C:\Users\couet\OneDrive\Bureau\Allan\Workspace\Projet-Semestre-1\ConsoleApplication1\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe
