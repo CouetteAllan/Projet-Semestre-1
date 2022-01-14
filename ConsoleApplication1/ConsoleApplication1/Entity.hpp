@@ -68,7 +68,7 @@ public:
 	//---------- Graphic Components ------------//
 	Shape*				sprite = nullptr;
 	Sprite*				spr = nullptr;
-	Texture				text;
+	static Texture				text;
 	bool				visible = true;
 	float				radius = 0.0f; //hitbox
 	CircleShape*		circle = nullptr;
@@ -83,7 +83,7 @@ public:
 	//-------------- Movement -------------------------//
 	float				dx = 0.0f;
 	float				dy = 0.0f;
-	inline static float friction = 0.827f;
+	static float friction;
 	float				speedMultiplier = 1;
 
 
@@ -91,7 +91,7 @@ public:
 	double			xx = 0.0f;
 	double			yy = 0.0f;
 
-	const inline static int stride = 32;
+	static int stride;
 
 	int				HPMax = 2;
 	int				HP;
@@ -131,6 +131,7 @@ public:
 	IntRect		textureRect;
 
 	virtual void update(double dt);
+	void		 heal(int& score);
 	
 	PlayerEntity(Shape* shape, float _cx, float _cy, EType _type = Player) : Entity(shape, _cx, _cy, _type) {
 		radius = 18.0f;
@@ -139,8 +140,8 @@ public:
 		circle->setOrigin(radius,radius);
 		setState(new IdleState(this));
 
-		if (text.loadFromFile("res/spriteSheetHero.png")) {
-			spr = new Sprite(text);
+		if (Entity::text.loadFromFile("res/spriteSheetHero.png")) {
+			spr = new Sprite(Entity::text);
 			textureRect = IntRect(0, 0, 128, 128);
 			spr->setTextureRect(textureRect);
 			spr->setOrigin(64, 54);
@@ -193,6 +194,8 @@ public:
 		circle->setFillColor(Color(255, 0, 0, 100));
 		circle->setOrigin(radius, radius);
 	}
+
+	int enemySize = 1;
 
 	~EnemyEntity() {
 		if (sprite)

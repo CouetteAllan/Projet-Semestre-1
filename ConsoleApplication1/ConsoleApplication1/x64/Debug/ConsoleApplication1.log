@@ -1,4 +1,9 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: Le répertoire intermédiaire (x64\Debug\) contient des fichiers partagés provenant d'un autre projet (ConsoleApplication1.vcxproj). Cela peut entraîner un comportement de nettoyage et de régénération incorrect.
+  ConsoleApplication1.cpp
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\consoleapplication1.cpp(39): warning C4244: 'argument' : conversion de 'time_t' en 'unsigned int', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\consoleapplication1.cpp(177): warning C4244: 'argument' : conversion de 'float' en 'sf::Uint8', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\consoleapplication1.cpp(176): warning C4244: 'argument' : conversion de 'float' en 'sf::Uint8', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\consoleapplication1.cpp(175): warning C4244: 'argument' : conversion de 'float' en 'sf::Uint8', perte possible de données
   Entity.cpp
 c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(5): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
 c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(6): warning C4244: '=' : conversion de 'float' en 'int', perte possible de données
@@ -58,4 +63,25 @@ c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplicat
 c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(450): warning C4244: '-=' : conversion de 'double' en 'float', perte possible de données
 c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(453): warning C4244: '+=' : conversion de 'double' en 'float', perte possible de données
 c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\entity.cpp(456): warning C4244: '-=' : conversion de 'double' en 'float', perte possible de données
+  Game.cpp
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\game.cpp(16): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+  Items.cpp
+  Particles.cpp
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\particles.cpp(30): warning C4244: '+=' : conversion de 'double' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=float
+          ]
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\particles.cpp(31): warning C4244: '+=' : conversion de 'double' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=float
+          ]
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\particles.cpp(47): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\particles.cpp(47): warning C4267: 'initialisation' : conversion de 'size_t' en 'const int', perte possible de données
+  PlayerGUI.cpp
+  SpawnerEnemy.cpp
+c:\users\couet\onedrive\bureau\allan\workspace\projet-semestre-1\consoleapplication1\consoleapplication1\spawnerenemy.cpp(38): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+  World.cpp
+  Génération de code en cours...
   ConsoleApplication1.vcxproj -> C:\Users\couet\OneDrive\Bureau\Allan\Workspace\Projet-Semestre-1\ConsoleApplication1\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe

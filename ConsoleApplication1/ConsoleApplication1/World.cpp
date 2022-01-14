@@ -19,6 +19,7 @@ void World::draw(RenderWindow& win)
 	}
 
 	Game::parts.draw(win);
+	HUD::draw(win);
 }
 
 void World::update(double dt)

@@ -13,6 +13,10 @@ public:
 
 	int sizeIdx = 1;
 
+	static int wavesEnemy;
+	static int numberOfEnemies;
+	static int numberOfEnemiesMax;
+
 	float sizeX = 30.0f;
 	float sizeY = 60.0f;
 

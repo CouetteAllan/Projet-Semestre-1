@@ -1,4 +1,7 @@
 #include "Entity.hpp"
+float Entity::friction = 0.827f;
+int Entity::stride = 32;
+Texture Entity::	text;
 
 Entity::Entity(Shape * shape, float _cx, float _cy, EType _type) {
 	type = _type;
@@ -239,6 +242,7 @@ void PlayerEntity::update(double dt)
 	if (currState) {
 		currState->onUpdate(dt);
 	}
+	heal(Game::score);
 	Entity::update(dt);
 	
 	if (timer != 0) {
@@ -273,6 +277,17 @@ void PlayerEntity::update(double dt)
 		Audio::gameOver.play();
 	}
 
+}
+
+void PlayerEntity::heal(int & score)
+{
+	static int cap = 5000;
+
+	if (score >= cap) {
+		cap += 5000;
+		this->HP++;
+		Audio::heal.play();
+	}
 }
 
 void Entity::setMousePos(Vector2f _mousePos)
@@ -537,11 +552,32 @@ void EnemyEntity::update(double dt)
 	Entity::update(dt);
 
 	if (!alive) {
+		SpawnerEnemy::numberOfEnemies--;
+		switch (enemySize)
+		{
+		case 1:
+			Game::score += 100;
+
+			break;
+		case 2:
+			Game::score += 200;
+
+			break;
+		case 3:
+			Game::score += 300;
+
+			break;
+
+
+		default:
+			break;
+		}
 		Audio::explosion.play();
 		Game::parts.part.setColor(Color(255, 0, 0, 255));
 		for (int i = 0; i < 10; ++i)
 			Game::particlesAt(this->getPosition());
 		this->type = Dead;
+		printf("score: %i \n", Game::score);
 	}
 
 }

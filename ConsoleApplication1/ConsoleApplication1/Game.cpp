@@ -9,6 +9,8 @@ Music Audio::bgm;
 Sound Audio::explosion;
 Sound Audio::gameOver;
 Sound Audio::hit;
+Sound Audio::heal;
+
 
 void Game::particlesAt(sf::Vector2f pos) {
 	int flip1 = (rand() % 2 == 0) ? 1 : -1;
@@ -52,8 +54,11 @@ static bool isColliding(int ccx, int ccy) {
 
 Audio::Audio()
 {
-	if (laserShootBuffer.loadFromFile("res/laserShoot.wav"))
-		Audio::laserShoot.setBuffer(laserShootBuffer);
+	if (laserShootBuffer.loadFromFile("res/laserShoot.wav")) {
+
+		Audio::laserShoot.setBuffer(laserShootBuffer);	
+		Audio::laserShoot.setVolume(30.0f);
+	}
 	if (explosionBuffer.loadFromFile("res/explosion.wav"))
 		Audio::explosion.setBuffer(explosionBuffer);
 
@@ -62,6 +67,9 @@ Audio::Audio()
 	
 	if (hitBuffer.loadFromFile("res/impactSound.wav"))
 		Audio::hit.setBuffer(hitBuffer);
+	
+	if (healBuffer.loadFromFile("res/heal.wav"))
+		Audio::heal.setBuffer(healBuffer);
 
 	if (bgm.openFromFile("res/bgm.wav")) {
 		Audio::bgm.play();

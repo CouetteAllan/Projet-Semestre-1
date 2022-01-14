@@ -4,6 +4,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include "World.hpp"
+#include "HUD.hpp"
 #include "Particles.hpp"
 #include "Entity.hpp"
 #include "SpawnerEnemy.hpp"
@@ -23,10 +24,11 @@ class Particle;
 class Game
 {
 public:
-	static inline const int W = 1280;
-	static inline const int H = 720;
+	static const int W = 1280;
+	static const int H = 720;
 
 	static int score;
+	static int wave;
 
 	static int			shake;
 	static Particle		parts;
@@ -62,5 +64,8 @@ public:
 	
 	static	sf::Sound			hit;
 	sf::SoundBuffer				hitBuffer;
+	
+	static	sf::Sound			heal;
+	sf::SoundBuffer				healBuffer;
 };
 

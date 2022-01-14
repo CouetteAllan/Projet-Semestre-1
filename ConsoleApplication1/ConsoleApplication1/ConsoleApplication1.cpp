@@ -8,18 +8,45 @@
 using namespace ImGui;
 
 
-int main()
-{
+bool startGame() {
 	sf::RenderWindow window(sf::VideoMode(Game::W, Game::H), "Jeu du turfu tavu");
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(144);
 
-	ImGui::SFML::Init(window);
+	sf::Font fArial;
+	if (!fArial.loadFromFile("res/04B_20__.TTF"))
+		cout << "font not loaded" << endl;
+	sf::Text textScore;
+	textScore.setFont(fArial);
+	textScore.setFillColor(sf::Color::White);
+	textScore.setCharacterSize(35);
+	textScore.setPosition(Vector2f(Game::W / 2, 20));
+	textScore.setOrigin(250, 10);
+	textScore.setFillColor(Color(17, 29, 158));
+
+	HUD::texts.push_back(textScore);
+	
+	sf::Text gameOverText;
+	gameOverText.setFont(fArial);
+	gameOverText.setFillColor(sf::Color::White);
+	gameOverText.setCharacterSize(45);
+	gameOverText.setPosition(Vector2f(Game::W / 2 - 320.0f, Game::H/2));
+	gameOverText.setOrigin(250, 10);
+	gameOverText.setString("		GAME OVER! \n Press \"R\" to restart");
+	
+	sf::Text waveText;
+	waveText.setFont(fArial);
+	waveText.setFillColor(sf::Color::White);
+	waveText.setCharacterSize(25);
+	waveText.setPosition(Vector2f(280 , 680));
+	waveText.setOrigin(250, 10);
+	waveText.setString("Wave : " + to_string(SpawnerEnemy::wavesEnemy));
+	//ImGui::SFML::Init(window);
 
 	RectangleShape* playerShape = new RectangleShape(Vector2f(20, 45));
 	playerShape->setFillColor(Color::Blue);
-	playerShape->setOrigin(10, 45.0f/2.0f);
-	
+	playerShape->setOrigin(10, 45.0f / 2.0f);
+
 
 	Game::player = new PlayerEntity(playerShape, 20, 15);
 
@@ -43,14 +70,15 @@ int main()
 	World::objects.push_back(Game::player);
 	World::objects.push_back(bullets);
 
-	spawn.spawnAtLocation(12, 13);
-	spawn.spawnAtLocation(14, 2);
-	spawn.spawnAtLocation(11, 2);
-	spawn.spawnAtLocation(8, 2);
+	HUD::init();
 
 	sf::Vector2i winPos = window.getPosition();
-	sf::Time  sec = sf::seconds(5.0f);
+	sf::Time  sec = sf::seconds(3.0f);
 	bool pause = false;
+
+	int nbEnemySpawned = 0;
+	int enemyNbr = 2;
+	int wavesEnemy = 1;
 	//----------------------------------------  IMGUI STUFF  -------------------------------------------------------------
 	float bgCol[3] = { 0,0,0 };
 	Clock clockImgui;
@@ -69,7 +97,7 @@ int main()
 			dt = 0;
 		tEnterFrame = getTimeStamp(); //calculer le temps entre chaque frame pour les vitesses
 		while (window.pollEvent(event)) {
-			ImGui::SFML::ProcessEvent(event);//Intégration IMGUI
+			//ImGui::SFML::ProcessEvent(event);//Intégration IMGUI
 			switch (event.type)
 			{
 
@@ -82,85 +110,90 @@ int main()
 					window.close();
 				if (event.key.code == sf::Keyboard::Space)
 					pause = !pause;
+				
 				break;
 
 			default:
 				break;
 			}
 		}
-		bool keyHit = false;
-/*
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
-			player->dy -= 2 * player->speedMultiplier;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-			player->dy += 2 * player->speedMultiplier;
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			player->dx += 2 * player->speedMultiplier;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-			player->dx -= 2 * player->speedMultiplier;
-		}*/
 
 
-		
 		bool mouseLeftIsPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
 		bool mouseIsReleased = (!mouseLeftIsPressed && mouseLeftWasPressed);
 		mousePos = (Vector2f)Mouse::getPosition(window);
 
 		bool timerFinished = timerAttack.getElapsedTime() >= sf::seconds(1.0f) / fireRate;
 		bool timerSpawnFinished = timerSpawn.getElapsedTime() >= sec;
+		if (!pause) {
 
-		if (timerSpawnFinished) {
-			int randomCX = rand() % (Game::W / Entity::stride) + 1;
-			int randomCY = rand() % (Game::W / Entity::stride) + 1;
+			if (timerSpawnFinished) {
+				int randomCX = rand() % (Game::W / Entity::stride) + 1;
+				int randomCY = rand() % (Game::H / Entity::stride) + 1;
 
-			spawn.spawnAtLocation(randomCX, randomCY);
-			timerSpawn.restart();
-		}
+				spawn.spawnAtLocation(randomCX, randomCY);
 
-		if (mouseLeftIsPressed && timerFinished && enable && Game::player->alive) {
-			auto pos = Game::player->getPosition();
-			auto dir = mousePos - pos;
-			float dirLen = std::sqrt(dir.x * dir.x + dir.y * dir.y);
-			sf::Vector2f dxy(1, 0);
-			if (dirLen) {
-				dxy = dir / dirLen;
+				for (size_t i = 1; i < enemyNbr; i++)
+				{
+					int randomCX = rand() % (Game::W / Entity::stride) + 1;
+					int randomCY = rand() % (Game::H / Entity::stride) + 1;
+					spawn.spawnAtLocation(randomCX, randomCY);
+				}
+				nbEnemySpawned++;
+
+
+				if (nbEnemySpawned == 5) {
+					enemyNbr++;
+					SpawnerEnemy::numberOfEnemiesMax++;
+					nbEnemySpawned = 0;
+					sec += sf::seconds(0.7f);
+					SpawnerEnemy::wavesEnemy++;
+				}
+
+				timerSpawn.restart();
 			}
-			dxy *= 20.0f;
-			bullets->create(pos.x, pos.y, dxy.x * 2, dxy.y * 2);
-			audio.laserShoot.play();
-			timerAttack.restart();
-			Game::player->click = 1;
+
+			if (mouseLeftIsPressed && timerFinished && enable && Game::player->alive) {
+				auto pos = Game::player->getPosition();
+				auto dir = mousePos - pos;
+				float dirLen = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+				sf::Vector2f dxy(1, 0);
+				if (dirLen) {
+					dxy = dir / dirLen;
+				}
+				dxy *= 20.0f;
+				bullets->create(pos.x, pos.y, dxy.x * 2, dxy.y * 2);
+				audio.laserShoot.play();
+				timerAttack.restart();
+				Game::player->click = 1;
+			}
+
+
+
+			if (mouseLeftIsPressed)
+				mouseLeftWasPressed = true;
+			else
+				mouseLeftWasPressed = false;
+
 		}
 
 
 
-		if (mouseLeftIsPressed)
-			mouseLeftWasPressed = true;
-		else
-			mouseLeftWasPressed = false;
 
+		//ImGui::SFML::Update(window, clockImgui.restart());
 
+		//Game::im();
 
-
-
-		ImGui::SFML::Update(window, clockImgui.restart());
-
-		Game::im();
-
-		Begin("Gun");
+		/*Begin("Gun");
 		SliderFloat("FireRate", &fireRate, 0.0f, 10.0f);
 		Checkbox("Enable", &enable);
 		End();
-			
+
 		Begin("Mouse");
 		Value("Coord X Mouse", mousePos.x);
 		Value("Coord Y Mouse", mousePos.y);
 		End();
-
+		*/
 
 		Game::player->setMousePos(mousePos);
 
@@ -176,10 +209,18 @@ int main()
 
 		////////////////////
 		//UPDATE
-		World::update(dt);
+		if (!pause)
+			World::update(dt);
+		textScore.setString("Score: " + to_string(Game::score));
+		waveText.setString("Wave : " + to_string(SpawnerEnemy::wavesEnemy));
 		////////////////////
 		//DRAW
 		World::draw(window);
+		window.draw(textScore);
+		window.draw(waveText);
+		if (!Game::player->alive)
+			window.draw(gameOverText);
+
 		//game elems
 
 		if (Game::shake > 0) {
@@ -194,11 +235,32 @@ int main()
 
 		//ui
 
-		ImGui::SFML::Render(window);
+		//ImGui::SFML::Render(window);
 		window.display();
 		tExitFrame = getTimeStamp();
+		if (sf::Keyboard::isKeyPressed(Keyboard::R))
+			return true;
+		
+		
 	}
-	ImGui::SFML::Shutdown();
+	//ImGui::SFML::Shutdown();
+}
 
+
+void runningGame() {
+	if (startGame()) {
+		Game::player = nullptr;
+		World::objects.clear();
+		SpawnerEnemy::numberOfEnemies = 0;
+		SpawnerEnemy::numberOfEnemiesMax = 8;
+		SpawnerEnemy::wavesEnemy = 1;
+		Game::score = 0;
+		runningGame();
+	}
+}
+
+int main()
+{
+	runningGame();
 	return 0;
 }
