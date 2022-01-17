@@ -148,11 +148,12 @@ bool startGame() {
 
 				if (nbEnemySpawned == 5) {
 					enemyNbr++;
-					SpawnerEnemy::numberOfEnemiesMax++;
+					SpawnerEnemy::numberOfEnemiesMax+=2;
 					nbEnemySpawned = 0;
-					sec += sf::seconds(0.7f);
+					sec += sf::seconds(0.8f);
 					SpawnerEnemy::wavesEnemy++;
 					Audio::wave.play();
+					fireRate += 0.2f;
 				}
 
 				timerSpawn.restart();

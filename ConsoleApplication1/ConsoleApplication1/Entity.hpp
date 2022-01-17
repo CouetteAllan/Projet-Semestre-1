@@ -121,7 +121,7 @@ public:
 	bool isColliding(int _cx, int _cy);
 protected:
 	float timer = 0;
-	float timerReset = 2;
+	float timerReset = 1.2f;
 };
 
 

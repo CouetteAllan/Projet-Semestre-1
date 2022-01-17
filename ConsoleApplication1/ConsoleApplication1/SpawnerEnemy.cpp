@@ -42,18 +42,18 @@ void SpawnerEnemy::spawnAtLocation(int _cx, int _cy)
 	case 1:
 		enemy->HPMax = 5;
 		enemy->radius = 15.0f;
-		enemy->speedMultiplier = 1.1f;
+		enemy->speedMultiplier = 1.2f;
 		if (wavesEnemy == 6) {
-			enemy->speedMultiplier = 1.3f;
+			enemy->speedMultiplier = 1.6f;
 		}
 		break;
 
 	case 2:
 		enemy->HPMax = 7;
 		enemy->radius = 25.0f;
-		enemy->speedMultiplier = 1.0f;
+		enemy->speedMultiplier = 1.1f;
 		if (wavesEnemy == 6) {
-			enemy->speedMultiplier = 1.2f;
+			enemy->speedMultiplier = 1.5f;
 		}
 
 		break;
@@ -61,9 +61,9 @@ void SpawnerEnemy::spawnAtLocation(int _cx, int _cy)
 	case 3:
 		enemy->HPMax = 10;
 		enemy->radius = 35.0f;
-		enemy->speedMultiplier = 0.8f;
+		enemy->speedMultiplier = 0.9f;
 		if (wavesEnemy == 6) {
-			enemy->speedMultiplier = 1.0f;
+			enemy->speedMultiplier = 1.3f;
 		}
 
 		break;
