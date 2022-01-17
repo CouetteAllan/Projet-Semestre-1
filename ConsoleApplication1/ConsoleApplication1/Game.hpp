@@ -67,5 +67,8 @@ public:
 	
 	static	sf::Sound			heal;
 	sf::SoundBuffer				healBuffer;
+	
+	static	sf::Sound			wave;
+	sf::SoundBuffer				waveBuffer;
 };
 

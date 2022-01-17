@@ -10,6 +10,7 @@ Sound Audio::explosion;
 Sound Audio::gameOver;
 Sound Audio::hit;
 Sound Audio::heal;
+Sound Audio::wave;
 
 
 void Game::particlesAt(sf::Vector2f pos) {
@@ -70,6 +71,11 @@ Audio::Audio()
 	
 	if (healBuffer.loadFromFile("res/heal.wav"))
 		Audio::heal.setBuffer(healBuffer);
+	
+	if (waveBuffer.loadFromFile("res/wave.wav")) {
+		Audio::wave.setBuffer(waveBuffer);
+		Audio::wave.setVolume(8.0f);
+	}
 
 	if (bgm.openFromFile("res/bgm.wav")) {
 		Audio::bgm.play();

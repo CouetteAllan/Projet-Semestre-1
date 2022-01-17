@@ -9,7 +9,7 @@ using namespace ImGui;
 
 
 bool startGame() {
-	sf::RenderWindow window(sf::VideoMode(Game::W, Game::H), "Jeu du turfu tavu");
+	sf::RenderWindow window(sf::VideoMode(Game::W, Game::H), "Shoot.exe");
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(144);
 
@@ -126,8 +126,12 @@ bool startGame() {
 		bool timerFinished = timerAttack.getElapsedTime() >= sf::seconds(1.0f) / fireRate;
 		bool timerSpawnFinished = timerSpawn.getElapsedTime() >= sec;
 		if (!pause) {
+			if (SpawnerEnemy::numberOfEnemies > SpawnerEnemy::numberOfEnemiesMax) {
+				timerSpawn.restart();
+			}
 
 			if (timerSpawnFinished) {
+				
 				int randomCX = rand() % (Game::W / Entity::stride) + 1;
 				int randomCY = rand() % (Game::H / Entity::stride) + 1;
 
@@ -148,6 +152,7 @@ bool startGame() {
 					nbEnemySpawned = 0;
 					sec += sf::seconds(0.7f);
 					SpawnerEnemy::wavesEnemy++;
+					Audio::wave.play();
 				}
 
 				timerSpawn.restart();
